@@ -1,0 +1,104 @@
+# .NET Core
+# Ignore build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]ist/
+[Dd]evelopment/
+[Dd]ebug-windows/
+[Dd]ebug-linux/
+[Dd]ebug-osx/
+[Dd]ist-windows/
+[Dd]ist-linux/
+[Dd]ist-osx/
+
+# User-specific files
+.vscode/
+.idea/
+
+# User-specific files (Windows)
+Thumbs.db
+Desktop.ini
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# ASP.NET Core
+# Local development settings
+appsettings.Development.json
+appsettings.local.json
+
+# ASP.NET Core - User secrets
+secrets.json
+
+# Generated files from IDEs
+# JetBrains Rider
+.idea/
+
+# User-specific files (OS X)
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Npm packages
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# .NET Core
+bin/
+obj/
+out/
+
+# ASP.NET Core
+# Local IIS Express config
+/.vs2019/
+.vs/
+
+# User settings for Visual Studio
+.vscode/
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Generated files from IDEs
+# JetBrains Rider
+.idea/
+
+# Files for compiling web-based applications (including Angular, React, Vue.js)
+# Node modules for client-side JavaScript apps
+node_modules/
+
+# Ignore coverage directories for code coverage tools
+coverage/
+
+# Ignore IDE/Editor-specific files
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# macOS Finder metadata
+.DS_Store
+
+# Windows Installer files
+Thumbs.db
+Desktop.ini
