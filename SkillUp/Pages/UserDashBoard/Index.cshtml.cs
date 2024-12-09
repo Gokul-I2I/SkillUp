@@ -20,7 +20,7 @@ namespace SkillUp.Pages.UserDashBoard
         {
             try
             {
-                var response = await _httpClient.GetAsync("https://localhost:7202/api/user"); 
+                var response = await _httpClient.GetAsync("https://localhost:7202/api/user");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();

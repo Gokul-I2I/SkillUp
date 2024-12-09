@@ -44,7 +44,7 @@ namespace SkillUpBackend.Controllers
         public async Task<IActionResult> DeleteUser(int id)
         {
             await _userService.DeleteUser(id);
-            return NoContent();
+            return Ok();
         }
 
         [HttpPut("{id}")]

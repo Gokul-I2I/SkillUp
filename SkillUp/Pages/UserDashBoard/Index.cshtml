@@ -10,6 +10,7 @@
 </head>
 <body>
 
+    <script src="~/js/DeleteUser.js"></script>
     <h1>User Management</h1>
 
     <p>
@@ -36,10 +37,17 @@
                         <td>@user.Email</td>
                         <td>@user.IsActive</td>
                         <td>@user.Role?.Name</td>
-                        <td>
-                            <a class="btn btn-warning" id="edit" asp-page="Edit" asp-route-id="@user.Id">Edit</a> 
-                            <a class="btn btn-danger" id="delete" asp-page="Delete" asp-route-id="@user.Id">Delete</a>                            
-                        </td>
+                        @if (user.IsActive)
+                        {
+                            <td>
+                                <a class="btn btn-warning" id="edit" asp-page="Edit" asp-route-id="@user.Id">Edit</a>
+                                <button class="btn btn-danger" id="delete" type="submit" onclick="confirmDelete(@user.Id)">Delete</button>
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
                     </tr>
                 }
             </tbody>
@@ -49,5 +57,4 @@
     <p>
         <a href="#" class="btn btn-primary">Back</a>
     </p>
-
 </body>
