@@ -1,0 +1,40 @@
+﻿@page
+@model LoginModel
+@{
+    Layout = null;
+}
+<head>
+    <link rel="stylesheet" href="~/css/Login.css" />
+    <title>Login</title>
+</head>
+<body>
+    <div class=" container">
+        <div class="welcome-section">
+            <h1>Train-Up</h1>
+            <p>Let’s make it simple</p>
+        </div>
+
+        <div class="Login-section">
+            <form method="post">
+                <div class="form-group">
+                    <div>
+                        <label for="Email">Email</label>
+                    </div>
+                    <div>
+                        <input type="email" id="Email" name="Email" class="form-control" required />
+                        <span id="emailError" style="color: red; display: none;">Please enter a valid email address.</span> <!-- Error message -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div>
+                        <label for="Password">Password</label>
+                    </div>
+                    <input type="password" id="Password" name="Password" class="form-control" required />
+                </div>
+                <br />
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    <script src="~/js/Login.js"></script>
+    </div>
+</body>

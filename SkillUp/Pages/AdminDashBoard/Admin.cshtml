@@ -1,0 +1,33 @@
+﻿@page
+@model SkillUp.Pages.AdminDashBoard.AdminModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="~/css/AdminDashBoard.css"> 
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="side-nav">
+        <button disabled onclick="Home()" id="homeButton">Home</button>
+        <button onclick="UserManagement()" id="userButton">User Management</button>
+        <button disabled onclick="MentorManagement()" id="mentorButton">View Mentors</button>
+        <button disabled onclick="TraineeManagement()" id="traineeButton">View Trainees</button>
+        <button disabled onclick="ViewTopics()" id="topicsButton">View Topics</button>
+        <button disabled onclick="ViewSubTopics()" id="subtopicsBtn">View SubTopics</button>
+        <button disabled onclick="BatchManagement()" id="batchBtn">Batch Management</button>
+        <button disabled onclick="ViewStreams()" id="streamBtn">View Stream</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Welcome Admin</h1>
+    </div>
+    <script src="~/js/AdminDashBoard.js"></script>
+</body>
+</html>

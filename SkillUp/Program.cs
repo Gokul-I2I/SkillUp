@@ -1,3 +1,5 @@
+using SkillUp.Pages.Login;
+
 namespace SkillUp
 {
     public class Program
@@ -7,15 +9,28 @@ namespace SkillUp
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddRazorPages();
+            builder.Services.AddRazorPages().AddViewOptions(options =>
+    {
+        options.HtmlHelperOptions.ClientValidationEnabled = true;
+    });
+            builder.Services.AddHttpClient();
+            builder.Services.AddControllers();
+            builder.Services.AddHttpClient<LoginModel>();
 
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    policy => policy.WithOrigins("https://localhost:7239")
+                                     .AllowAnyMethod()
+                                     .AllowAnyHeader());
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -24,10 +39,17 @@ namespace SkillUp
 
             app.UseRouting();
 
+            app.UseAuthentication();  // Ensure authentication middleware is used
             app.UseAuthorization();
 
-            app.MapRazorPages();
+            // Default route should map to login page
+            app.MapGet("/", async context =>
+            {
+                context.Response.Redirect("Login/Login");
+            });
 
+            // Map Razor Pages
+            app.MapRazorPages();
             app.Run();
         }
     }

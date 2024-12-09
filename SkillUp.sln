@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillUp", "SkillUp\SkillUp.csproj", "{3D0FE17D-ED3D-4538-A8A9-C447B2008581}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillUpBackend", "SkillUpBackend\SkillUpBackend.csproj", "{D2951872-89D3-474F-91B7-3E847984BEDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillUpBackend", "SkillUpBackend\SkillUpBackend.csproj", "{D2951872-89D3-474F-91B7-3E847984BEDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,53 @@
+﻿@page
+@model SkillUp.Pages.UserDashBoard.IndexModel
+@{
+    ViewData["Title"] = "Users";
+    Layout = null;
+}
+<head>
+    <link rel="stylesheet" href="~/css/UserIndex.css" />
+    <title>User Index</title>
+</head>
+<body>
+
+    <h1>User Management</h1>
+
+    <p>
+        <a class="btn btn-primary" asp-page="/UserDashBoard/Create">Create New User</a>
+    </p>
+    <div style="overflow-x: auto; overflow-y: auto; max-height: 400px; border: 1px solid #dee2e6;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Is Active</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.Email</td>
+                        <td>@user.IsActive</td>
+                        <td>@user.Role?.Name</td>
+                        <td>
+                            <a class="btn btn-warning" id="edit" asp-page="Edit" asp-route-id="@user.Id">Edit</a> 
+                            <a class="btn btn-danger" id="delete" asp-page="Delete" asp-route-id="@user.Id">Delete</a>                            
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <p>
+        <a href="#" class="btn btn-primary">Back</a>
+    </p>
+
+</body>

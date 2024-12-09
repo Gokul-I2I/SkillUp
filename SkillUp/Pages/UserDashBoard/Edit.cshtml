@@ -1,0 +1,48 @@
+﻿@page "/Edit/{id}"
+@model SkillUp.Pages.UserDashBoard.EditModel
+@{
+    ViewData["Title"] = "Edit User";
+    Layout = null;
+    
+}
+<head>
+    <link rel="stylesheet" href="~/css/UserEdit.css"/>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit User</h1>
+
+        <form method="post">
+            <input type="hidden" asp-for= "@Model.User.Id" />
+            <div class="form-group">
+                <label asp-for="User.FirstName" class="control-label"></label>
+                <input asp-for="@Model.User.FirstName" class="form-control" />
+                <span asp-validation-for="User.FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.LastName" class="control-label"></label>
+                <input asp-for="@Model.User.LastName" class="form-control" />
+                <span asp-validation-for="User.LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.DateOfBirth" class="control-label"></label>
+                <input asp-for="@Model.User.DateOfBirth" type="date" class="form-control" />
+                <span asp-validation-for="User.DateOfBirth" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.Qualification" class="control-label"></label>
+                <input asp-for="@Model.User.Qualification" class="form-control" />
+                <span asp-validation-for="User.Qualification" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Password" class="control-label"></label>
+                <input asp-for="User.Password" type="password" class="form-control" />
+                <span asp-validation-for="User.Password" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</body>

@@ -1,0 +1,70 @@
+﻿@page
+@model SkillUp.Pages.UserDashBoard.CreateModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+    <link rel="stylesheet" href="~/css/UserCreate.css" />
+</head>
+<body>
+    <div class="container">
+       
+        <h1>Create User</h1>
+
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="User.FirstName">First Name</label>
+                <input asp-for="User.FirstName" class="form-control" />
+                <span asp-validation-for="User.FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.LastName">Last Name</label>
+                <input asp-for="User.LastName" class="form-control" />
+                <span asp-validation-for="User.LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.Email">Email</label>
+                <input asp-for="User.Email" class="form-control" type="email" />
+                <span asp-validation-for="User.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.Password">Password</label>
+                <input asp-for="User.Password" class="form-control" type="password" />
+                <span asp-validation-for="User.Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="User.Role" class="control-label">Role</label>
+                <select asp-for="User.Role" class="form-control">
+                    <option value="">Select Role</option>
+                    @foreach (var role in (IEnumerable<SelectListItem>)ViewData["Roles"])
+                    {
+                        <option value="@role.Value">@role.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="User.Role" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="reset" class="btn btn-secondary">Clear</button>
+            </div>
+        </form>
+
+        <script src="~/js/UserCreate.js"></script>
+    </div>
+</body>
+</html>
