@@ -102,3 +102,5 @@ coverage/
 # Windows Installer files
 Thumbs.db
 Desktop.ini
+
+appsettings.json
