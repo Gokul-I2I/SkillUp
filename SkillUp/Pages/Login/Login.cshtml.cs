@@ -32,7 +32,7 @@ namespace SkillUp.Pages.Login
                         case "admin":
                             return RedirectToPage("/AdminDashBoard/Admin");
                         case "mentor":
-                            return RedirectToPage("/MentorDashBoard/Mentor");
+                            return RedirectToPage("/Mentor/Index");
                         case "trainee":
                             return RedirectToPage("/TraineeDashBoard/Trainee");
                         default:

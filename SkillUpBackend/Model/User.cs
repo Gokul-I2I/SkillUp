@@ -25,7 +25,6 @@ namespace SkillUpBackend.Model
 
         [Column(TypeName = "VARCHAR(25)")]
         public required string InsertedBy { get; set; }
-
         [Column(TypeName = "VARCHAR(25)")]
         public string? UpdatedBy { get; set; }
         public DateTime InsertedOn { get; set; } = DateTime.Now;

@@ -1,0 +1,288 @@
+﻿  @page
+@model SkillUp.Pages.Mentor.IndexModel
+
+@{
+    ViewData["Title"] = "Mentor Dashboard";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SkillUp</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        /* General styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #dbeafe; /* Gentle blue */
+            color: #333;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px; /* Uniform header height */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+            .header-left h1 {
+                margin: 0;
+                font-size: 1.5rem;
+            }
+
+            .header-left small {
+                font-size: 0.9rem;
+                color: #555;
+                margin-left: 10px;
+            }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+            .header-right a {
+                margin-left: 15px;
+                color: #333;
+                text-decoration: none;
+            }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 60px; /* Below the header */
+            left: 0;
+            height: calc(100vh - 60px);
+            width: 60px; /* Collapsed width */
+            background-color: #343a40; /* Dark gray */
+            color: #fff;
+            transition: width 0.3s;
+            overflow: hidden;
+        }
+
+            .sidebar:hover {
+                width: 200px; /* Expanded width */
+            }
+
+            .sidebar a {
+                display: flex;
+                align-items: center;
+                padding: 15px;
+                color: #fff;
+                text-decoration: none;
+                transition: background 0.3s;
+            }
+
+                .sidebar a:hover {
+                    background-color: #495057; /* Lighter gray */
+                }
+
+            .sidebar i {
+                font-size: 20px;
+                margin-right: 10px;
+            }
+
+            .sidebar span {
+                display: none;
+            }
+
+            .sidebar:hover span {
+                display: inline;
+            }
+
+        /* Main content styles */
+        .main-content {
+            margin-left: 60px; /* Space for collapsed sidebar */
+            padding: 20px;
+            transition: margin-left 0.3s;
+        }
+
+        .sidebar:hover ~ .main-content {
+            margin-left: 200px; /* Space for expanded sidebar */
+        }
+
+        /* Footer styles */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin-top: auto;
+        }
+
+        /* Manage Buttons section */
+        .manage-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+            .manage-buttons .btn {
+                padding: 10px 20px;
+                font-size: 16px;
+                border-radius: 5px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+        .card {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            font-size: 18px;
+            padding: 10px;
+        }
+
+        .card-body {
+            padding: 20px;
+            font-size: 16px;
+        }
+
+            .card-body p {
+                margin-bottom: 15px;
+                color: #555;
+            }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="#">
+            <i class="bi bi-house-door"></i>
+            <span>Home</span>
+        </a>
+        <a href="#">
+            <i class="bi bi-people"></i>
+            <span>Batches</span>
+        </a>
+        <a href="#">
+            <i class="bi bi-grid"></i>
+            <span>Streams</span>
+        </a>
+        <a href="#">
+            <i class="bi bi-calendar"></i>
+            <span>Calendar</span>
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="panel">
+            <h3>Welcome, Mentor</h3>
+            <h2>Task Progress</h2>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Task</th>
+                        <th>Progress State</th>
+                        <th>Trainees</th>
+                        <th>Due Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Complete Module 1</td>
+                        <td>In Progress</td>
+                        <td>John Doe</td>
+                        <td>12/16/2024</td>
+                        <td>
+                            <button class="btn btn-info btn-sm">Send Alert</button>
+                            <button class="btn btn-warning btn-sm">Add Comment</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Submit Final Report</td>
+                        <td>Completed</td>
+                        <td>Jane Smith</td>
+                        <td>12/6/2024</td>
+                        <td>
+                            <button class="btn btn-info btn-sm">Send Alert</button>
+                            <button class="btn btn-warning btn-sm">Add Comment</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Read Chapter 3</td>
+                        <td>Not Started</td>
+                        <td>Michael Brown</td>
+                        <td>12/23/2024</td>
+                        <td>
+                            <button class="btn btn-info btn-sm">Send Alert</button>
+                            <button class="btn btn-warning btn-sm">Add Comment</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row justify-content-center mt-4">
+            <!-- Manage Topics Panel -->
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm">
+                    <div class="card-header bg-primary text-white fw-bold">
+                        Manage Topics
+                    </div>
+                    <div class="card-body">
+                        <p>View, create, and edit topics for the program.</p>
+                        <button onclick="AddTopic()" class="btn btn-primary" type="button">Manage Topics</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Subtopics Panel -->
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm">
+                    <div class="card-header bg-secondary text-white fw-bold">
+                        Manage Subtopics
+                    </div>
+                    <div class="card-body">
+                        <p>View, create, and edit subtopics under topics.</p>
+                        <button onclick="manageSubTopics()" class="btn btn-secondary">Manage Subtopics</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage Topics and Subtopics -->
+        <div class="mt-4 text-center">
+            
+        </div>
+        </div>
+</body>
+</html>
+
+
+        <script>
+            function AddTopic() {
+                // Navigate to Add Topic page (you may create an AddTopic Razor page for this)
+                window.location.href = '@Url.Page("AddTopic")';
+            }
+            function manageSubTopics() {
+                window.location.href = '@Url.Page("ManageSubtopic")';
+            }
+        </script>
+

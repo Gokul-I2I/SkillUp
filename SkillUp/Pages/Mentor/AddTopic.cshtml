@@ -1,0 +1,257 @@
+﻿@page
+@model SkillUp.Pages.Mentor.AddTopicModel
+
+@{
+    ViewData["Title"] = "Add Topic";
+}
+
+<h1 class="text-center mb-4">Manage Topics</h1>
+
+<!-- Add Topic Button -->
+<div class="text-end mb-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTopicModal">+ Add Topic</button>
+</div>
+
+<!-- Table to Display Topics -->
+<div id="tableContainer" class="table-responsive shadow-sm p-3 mb-5 bg-body rounded" style="max-height: 150px; overflow-y: scroll; border: 1px solid black;">
+    <table class="table table-hover table-bordered" id="topicsTable">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamically populated rows -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Topic Modal -->
+<div class="modal fade" id="addTopicModal" tabindex="-1" aria-labelledby="addTopicModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addTopicModalLabel">Add New Topic</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addTopicForm">
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label for="topicName" class="form-label">Name <span class="text-danger">*</span></label>
+                        <input id="topicName" name="Name" class="form-control" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="topicDescription" class="form-label">Description</label>
+                        <textarea id="topicDescription" name="Description" class="form-control"></textarea>
+                    </div>
+                    <div id="message" class="alert d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add Topic</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        #tableContainer {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            vertical-align: middle;
+        }
+
+        h1 {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        let currentPage = 1;
+        const pageSize = 5;
+        let isLoading = false;
+        let hasMoreData = true;
+
+        // Function to load topics
+        function loadTopics() {
+            if (isLoading || !hasMoreData) return; // Prevent duplicate requests
+            isLoading = true;
+
+            fetch(`https://localhost:7202/api/Mentor/topics?pageNumber=${currentPage}&pageSize=${pageSize}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error("Failed to load topics.");
+                    }
+                })
+                .then(data => {
+                    const tableBody = document.querySelector("#topicsTable tbody");
+
+                    if (data.topics.length === 0) {
+                        hasMoreData = false; // No more data to load
+                    } else {
+                        data.topics.forEach(topic => {
+                            const row = createTopicRow(topic);
+                            tableBody.appendChild(row);
+                        });
+                        currentPage++;
+                    }
+
+                    const container = document.getElementById("tableContainer");
+                    if (container.scrollHeight <= container.clientHeight && hasMoreData) {
+                        loadTopics(); // Load more data if table doesn't fill container
+                    }
+                })
+                .catch(error => console.error("Error loading topics:", error))
+                .finally(() => isLoading = false);
+        }
+
+        // Function to create a table row
+        function createTopicRow(topic) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                        <td>${topic.name}</td>
+                        <td>${topic.description}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning" onclick="editTopic('${topic.id}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteTopic('${topic.id}')">Delete</button>
+                        </td>`;
+            return row;
+        }
+
+        // Add new topic via form submission
+        document.getElementById("addTopicForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const topic = {
+                name: document.getElementById("topicName").value,
+                description: document.getElementById("topicDescription").value
+            };
+
+            fetch("https://localhost:7202/api/Mentor/topic", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(topic)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error("Failed to add topic.");
+                    }
+                })
+                .then(data => {
+                    const tableBody = document.querySelector("#topicsTable tbody");
+                    const row = createTopicRow(data.topic); // Add new topic row at the beginning
+                    tableBody.insertBefore(row, tableBody.firstChild);
+
+                    const message = document.getElementById("message");
+                    message.classList.remove("d-none", "alert-danger");
+                    message.classList.add("alert-success");
+                    message.innerText = "Topic added successfully!";
+
+                    document.getElementById("addTopicForm").reset();
+                    document.getElementById("addTopicModal").querySelector(".btn-close").click(); // Close modal
+                })
+                .catch(error => {
+                    const message = document.getElementById("message");
+                    message.classList.remove("d-none", "alert-success");
+                    message.classList.add("alert-danger");
+                    message.innerText = error.message;
+                });
+        });
+
+        // Function to edit a topic
+        function editTopic(id) {
+            const newName = prompt("Enter the new name:");
+            const newDescription = prompt("Enter the new description:");
+            if (newName && newDescription) {
+                fetch(`https://localhost:7202/api/Mentor/topic/${id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id, name: newName, description: newDescription })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Failed to edit topic.");
+                        }
+                        return response.json();
+                    })
+                    .then(() => {
+                        // Refresh the table content
+                        const row = document.querySelector(`#topicsTable tbody tr[data-id="${id}"]`);
+                        if (row) {
+                            row.children[0].innerText = newName;
+                            row.children[1].innerText = newDescription;
+                        }
+                        alert("Topic updated successfully!");
+                    })
+                    .catch(error => {
+                        alert("Error editing topic: " + error.message);
+                    });
+            }
+        }
+
+
+        // Function to delete a topic
+        function deleteTopic(topicId) {
+            if (!confirm("Are you sure you want to delete this topic?")) return;
+
+            fetch(`https://localhost:7202/api/Mentor/topic/${topicId}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove the row with matching data-id
+                        const row = document.querySelector(`#topicsTable tbody tr[data-id="${topicId}"]`);
+                        if (row) {
+                            row.remove();
+                        }
+                        alert("Topic deleted successfully!");
+                    } else {
+                        throw new Error("Failed to delete topic.");
+                    }
+                })
+                .catch(error => console.error("Error deleting topic:", error));
+        }
+
+
+        // Scroll event listener for loading more data
+        document.getElementById("tableContainer").addEventListener("scroll", function () {
+            const container = this;
+            if (container.scrollTop + container.clientHeight >= container.scrollHeight - 5) {
+                loadTopics(); // Load more topics on scroll
+            }
+        });
+        function createTopicRow(topic) {
+            const row = document.createElement("tr");
+            row.setAttribute("data-id", topic.id); // Assign topic ID for easy targeting
+            row.innerHTML = `
+                <td>${topic.name}</td>
+                <td>${topic.description}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning" onclick="editTopic('${topic.id}')">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteTopic('${topic.id}')">Delete</button>
+                </td>`;
+            return row;
+        }
+
+
+        // Load initial topics on page load
+        document.addEventListener("DOMContentLoaded", loadTopics);
+    </script>
+}

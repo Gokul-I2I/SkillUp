@@ -1,4 +1,5 @@
 using SkillUp.Pages.Login;
+using SkillUp.Services;
 
 namespace SkillUp
 {
@@ -15,6 +16,11 @@ namespace SkillUp
     });
             builder.Services.AddHttpClient();
             builder.Services.AddControllers();
+            builder.Services.AddHttpClient<ApiService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7202/"); 
+            });
+
             builder.Services.AddHttpClient<LoginModel>();
 
 

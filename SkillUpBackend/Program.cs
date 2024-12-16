@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using skillup.Api.Service;
 using SkillUpBackend.Repository;
 using SkillUpBackend.Service;
 using SkillUpBackend.Utils;
@@ -21,7 +22,8 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<PasswordHelper>();
-
+            builder.Services.AddScoped<IMentorService, MentorService>();
+            builder.Services.AddScoped<IMentorRepository, MentorRepository>();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddCors(options =>

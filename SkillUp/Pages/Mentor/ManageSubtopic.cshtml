@@ -1,0 +1,65 @@
+﻿@page
+@model SkillUp.Pages.Mentor.ManageSubtopicModel
+
+@{
+    ViewData["Title"] = "Manage Subtopics";
+}
+
+<h1>Manage Subtopics</h1>
+
+<!-- Add Subtopic Form -->
+<form method="post" asp-page-handler="Add">
+    <div class="form-group">
+        <label for="Name">Subtopic Name</label>
+        <input type="text" id="Name" name="Subtopic.Name" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <textarea id="Description" name="Subtopic.Description" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="TopicId">Topic ID</label>
+        <input type="number" id="TopicId" name="Subtopic.TopicId" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Add Subtopic</button>
+</form>
+
+<hr />
+
+<!-- Subtopics Table -->
+<h2>Existing Subtopics</h2>
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Topic ID</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var subtopic in Model.Subtopics)
+        {
+            <tr>
+                <td>@subtopic.Name</td>
+                <td>@subtopic.Description</td>
+                <td>@subtopic.TopicId</td>
+                <td>
+                    <!-- Edit Form -->
+                    <form method="post" asp-page-handler="Edit" style="display:inline;">
+                        <input type="hidden" name="Subtopic.Id" value="@subtopic.Id" />
+                        <input type="hidden" name="Subtopic.Name" value="@subtopic.Name" />
+                        <input type="hidden" name="Subtopic.Description" value="@subtopic.Description" />
+                        <input type="hidden" name="Subtopic.TopicId" value="@subtopic.TopicId" />
+                        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                    </form>
+
+                    <!-- Delete Form -->
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@subtopic.Id" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
