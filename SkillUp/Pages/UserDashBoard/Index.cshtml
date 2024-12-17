@@ -9,12 +9,10 @@
     <title>User Index</title>
 </head>
 <body>
-
-    <script src="~/js/DeleteUser.js"></script>
+    <script src="~/js/UserManagement.js"></script>
     <h1>User Management</h1>
-
     <p>
-        <a class="btn btn-primary" asp-page="/UserDashBoard/Create">Create New User</a>
+        <a class="btn btn-primary" asp-page="CreateOrEdit">Create User</a>
     </p>
     <div style="overflow-x: auto; overflow-y: auto; max-height: 400px; border: 1px solid #dee2e6;">
         <table class="table">
@@ -40,13 +38,15 @@
                         @if (user.IsActive)
                         {
                             <td>
-                                <a class="btn btn-warning" id="edit" asp-page="Edit" asp-route-id="@user.Id">Edit</a>
+                                <a class="btn btn-warning" id="edit" asp-page="CreateOrEdit" asp-route-id="@user.Id">Edit</a>
                                 <button class="btn btn-danger" id="delete" type="submit" onclick="confirmDelete(@user.Id)">Delete</button>
                             </td>
                         }
                         else
                         {
-                            <td></td>
+                            <td>
+                                <button class=" btn btn-secondary" id="active" type="button" onclick="confirmActive(@user.Id)">Active</button>
+                            </td>
                         }
                     </tr>
                 }

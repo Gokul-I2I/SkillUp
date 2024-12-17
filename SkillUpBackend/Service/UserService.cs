@@ -10,7 +10,6 @@ namespace SkillUpBackend.Service
         private readonly IUserRepository _userRepository;
         private readonly IRoleService _roleService;
         private readonly PasswordHelper _passwordHelper;
-        
 
         public UserService(IUserRepository userRepository, IRoleService roleService, PasswordHelper passwordHelper)
         {
@@ -19,12 +18,17 @@ namespace SkillUpBackend.Service
             _passwordHelper = passwordHelper;
         }
 
-        public async Task AddUser(UserCreateModel userCreateModel)
+        public async Task AddUser(UserCreateOrEdit userCreateOrEdit)
         {
-            var user = MapToDomainModel(userCreateModel);
+            User userDetails = await _userRepository.GetUserByEmail(userCreateOrEdit.Email.ToLower());
+            if(userDetails != null)
+            {
+                throw new UserAlreadyExitException($"user already present in this email : {userCreateOrEdit.Email}");
+            }
+            var user = MapToDomainModel(userCreateOrEdit);
             await _userRepository.AddUser(user);
         }
-        private User MapToDomainModel(UserCreateModel viewModel)
+        private User MapToDomainModel(UserCreateOrEdit viewModel)
         {
             var user = new User
             {
@@ -44,7 +48,10 @@ namespace SkillUpBackend.Service
         public async Task<User> ValidateUserCredentials(string email, string password)
         {
             var user = await _userRepository.GetUserByEmail(email.ToLower());
-
+            if(user == null)
+            {
+                throw new UserNotFoundException();
+            }
             if (!_passwordHelper.IsValidPassword(password, user.Password))
             {
                 throw new UnauthorizedAccessException("Password Mismatch");
@@ -64,34 +71,53 @@ namespace SkillUpBackend.Service
             await _userRepository.UpdateUser(user);
         }
 
-        public async Task<UserEditModel> GetUserById(int id)
+        public async Task<UserCreateOrEdit> GetUserById(int id)
         {
             var user = await _userRepository.GetUserById(id);
-            return new UserEditModel
+            if (!user.IsActive)
+            {
+                throw new UserNotFoundException();
+            }
+            return new UserCreateOrEdit
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth,
                 Qualification = user.Qualification,
+                Email = user.Email,
+                Password = user.Password,
+                Role = user.Role.Name,
             };
         }
 
-        public async Task UpdateUser(int id, UserEditModel userEditModel)
+        public async Task UpdateUser(int id, UserCreateOrEdit userCreateOrEdit)
         {
             var user = await _userRepository.GetUserById(id);
-            user.FirstName = userEditModel.FirstName;
-            user.LastName = userEditModel.LastName;
-            user.DateOfBirth = userEditModel.DateOfBirth;
-            user.Qualification = userEditModel.Qualification;
+            if (!user.IsActive)
+            {
+                throw new UserNotFoundException();
+            }
+            user.FirstName = userCreateOrEdit.FirstName;
+            user.LastName = userCreateOrEdit.LastName;
+            user.DateOfBirth = userCreateOrEdit.DateOfBirth;
+            user.Qualification = userCreateOrEdit.Qualification;
             user.UpdatedBy = user.FirstName;
             user.LastUpdatedOn = DateTime.Now;
-            user.Password = _passwordHelper.HashPassword(userEditModel.Password);
+            user.Password = _passwordHelper.HashPassword(userCreateOrEdit.Password);
+            user.Role = _roleService.GetRoleById(int.Parse(userCreateOrEdit.Role)).Result;
             await _userRepository.UpdateUser(user);
         }
         public async Task<IEnumerable<User>> GetAllUsers()
         {
             return await _userRepository.GetAllUsers();
+        }
+
+        public async Task ActiveUser(int id)
+        {
+            var user = await _userRepository.GetUserById(id);
+            user.IsActive = true;
+            await _userRepository.UpdateUser(user);
         }
     }
 }

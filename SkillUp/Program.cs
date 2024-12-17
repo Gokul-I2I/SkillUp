@@ -22,17 +22,17 @@ namespace SkillUp
             });
 
             builder.Services.AddHttpClient<LoginModel>();
-
-
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowSpecificOrigin",
-                    policy => policy.WithOrigins("https://localhost:7239")
-                                     .AllowAnyMethod()
-                                     .AllowAnyHeader());
+                options.AddPolicy("AllowAll",
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    });
             });
             var app = builder.Build();
 
+            app.UseCors("AllowAll");
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -42,16 +42,13 @@ namespace SkillUp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
-            app.UseAuthentication();  // Ensure authentication middleware is used
             app.UseAuthorization();
 
             // Default route should map to login page
             app.MapGet("/", async context =>
             {
-                context.Response.Redirect("Login/Login");
+                context.Response.Redirect("Login/login");
             });
 
             // Map Razor Pages

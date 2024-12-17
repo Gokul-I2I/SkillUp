@@ -7,12 +7,16 @@ namespace SkillUp.Pages.UserDashBoard
     public class IndexModel : PageModel
     {
         private readonly HttpClient _httpClient;
+        private readonly string _apiBaseUrl;
+
 
         public IEnumerable<User> Users { get; set; }
 
-        public IndexModel(HttpClient httpClient)
+        public IndexModel(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _apiBaseUrl = configuration["ApiBaseUrl"];
+
         }
 
         // OnGetAsync method fetches user data from the API
@@ -20,7 +24,7 @@ namespace SkillUp.Pages.UserDashBoard
         {
             try
             {
-                var response = await _httpClient.GetAsync("https://localhost:7202/api/user");
+                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/user");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();

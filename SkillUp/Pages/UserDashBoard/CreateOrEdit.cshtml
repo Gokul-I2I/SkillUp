@@ -1,0 +1,87 @@
+﻿@page "/UserDashBoard/CreateOrEdit/{id?}"
+@model SkillUp.Pages.UserDashBoard.CreateOrEditModel
+@{
+    Layout = null;
+    bool isEditMode = Model.IsEditMode;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@(isEditMode ? "Edit User" : "Create User")</title>
+    <link rel="stylesheet" href="~/css/UserCreateEdit.css" />
+</head>
+<body>
+    <div class="container">
+        <h1>@(isEditMode ? "Edit User" : "Create User")</h1>
+
+        <form method="post">
+            @if (isEditMode)
+            {
+                <input type="hidden" asp-for="UserCreateOrEdit.Id" />
+            }
+
+            <div class="form-group">
+                <label asp-for="UserCreateOrEdit.FirstName">First Name</label>
+                <input asp-for="@Model.UserCreateOrEdit.FirstName" class="form-control" />
+                <span asp-validation-for="UserCreateOrEdit.FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="UserCreateOrEdit.LastName">Last Name</label>
+                <input asp-for="@Model.UserCreateOrEdit.LastName" class="form-control" />
+                <span asp-validation-for="UserCreateOrEdit.LastName" class="text-danger"></span>
+            </div>
+
+            @if (!isEditMode)
+            {
+                <div class="form-group">
+                    <label asp-for="UserCreateOrEdit.Email">Email</label>
+                    <input asp-for="UserCreateOrEdit.Email" class="form-control" type="email" />
+                    <span asp-validation-for="UserCreateOrEdit.Email" class="text-danger"></span>
+                </div>
+            } 
+            @if (isEditMode)
+            {
+                <div class="form-group">
+                    <label asp-for="UserCreateOrEdit.Qualification">Qualification</label>
+                    <input asp-for="@Model.UserCreateOrEdit.Qualification" class="form-control" />
+                    <span asp-validation-for="UserCreateOrEdit.Qualification" class="text-danger"></span>
+                </div>
+            } 
+            @if (isEditMode)
+            {
+                <div class="form-group">
+                    <label asp-for="UserCreateOrEdit.DateOfBirth">Date Of Birth</label>
+                    <input asp-for="@Model.UserCreateOrEdit.DateOfBirth" class="form-control" type="date" min="1900-01-01" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="UserCreateOrEdit.DateOfBirth" class="text-danger"></span>
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="UserCreateOrEdit.Password">Password</label>
+                <input asp-for="UserCreateOrEdit.Password" class="form-control" type="password" />
+                <span asp-validation-for="UserCreateOrEdit.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserCreateOrEdit.Role">Role</label>
+                <select asp-for="@Model.UserCreateOrEdit.Role" class="form-control">
+                    <option >Select Role</option>
+                    @foreach (var role in (IEnumerable<SelectListItem>)ViewData["Roles"] ?? Enumerable.Empty<SelectListItem>())
+                    {
+                        <option value="@role.Value">@role.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="UserCreateOrEdit.Role" class="text-danger"></span>
+            </div>
+            <br />
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">@(isEditMode ? "Update" : "Save")</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

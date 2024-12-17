@@ -15,10 +15,6 @@ namespace SkillUpBackend.Repository
         public async Task<User> GetUserByEmail(string email)
         {
             var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == email && u.IsActive == true);
-            if (user == null)
-            {
-                throw new UserNotFoundException();
-            }
             return user;
         }
 
@@ -35,7 +31,7 @@ namespace SkillUpBackend.Repository
         }
         public async Task<User> GetUserById(int id)
         {
-            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == id && u.IsActive == true);
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
                 throw new UserNotFoundException();

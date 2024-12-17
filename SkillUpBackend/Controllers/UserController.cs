@@ -18,50 +18,54 @@ namespace SkillUpBackend.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<User>> GetUsers()
         {
-            var users = _userService.GetAllUsers();
-            if (users == null)
-            {
-                return NotFound("No users found.");
-            }
-            return Ok(users);
-        }
-        // POST: Users/Create
-        [HttpPost]
-        public async Task<IActionResult> AddUser([FromBody] UserCreateModel userCreateModel)
-        {
             try
             {
-                await _userService.AddUser(userCreateModel);
-                return Ok();
+                var users = _userService.GetAllUsers();
+                if (users == null)
+                {
+                    return NotFound("No users found.");
+                }
+                return Ok(users);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-        // Delete: Users/Delete
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            await _userService.DeleteUser(id);
-            return Ok();
-        }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserEditModel userEditModel)
+        [HttpPost]
+        public async Task<IActionResult> AddUser([FromBody] UserCreateOrEdit userCreateOrEdit)
         {
             try
             {
-                await _userService.UpdateUser(id, userEditModel);
+                await _userService.AddUser(userCreateOrEdit);
+                return Ok();
+            }
+            catch (UserAlreadyExitException ex)
+            {
+                return Conflict(ex.Message );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest( ex.Message );
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserCreateOrEdit userCreateOrEdit)
+        {
+            try
+            {
+                await _userService.UpdateUser(id, userCreateOrEdit);
                 return Ok();
             }
             catch (UserNotFoundException)
             {
                 return NotFound();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
         [HttpGet("{id}")]
@@ -76,9 +80,42 @@ namespace SkillUpBackend.Controllers
             {
                 return NotFound();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ActiveUser(int id)
+        {
+            try
+            {
+                await _userService.ActiveUser(id);
+                return Ok();
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        // Delete: Users/Delete
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                await _userService.DeleteUser(id);
+                return NoContent();
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }
