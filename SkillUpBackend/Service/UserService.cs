@@ -1,21 +1,25 @@
 ﻿using SkillUpBackend.CustomException;
+using SkillUpBackend.Mapper;
 using SkillUpBackend.Model;
 using SkillUpBackend.Repository;
 using SkillUpBackend.Utils;
+using SkillUpBackend.ViewModel;
 
 namespace SkillUpBackend.Service
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IRoleService _roleService;
         private readonly PasswordHelper _passwordHelper;
+        private readonly IRoleService _roleService;
+        private readonly UserMapper _userMapper;
 
-        public UserService(IUserRepository userRepository, IRoleService roleService, PasswordHelper passwordHelper)
+        public UserService(IUserRepository userRepository, PasswordHelper passwordHelper, UserMapper userMapper, IRoleService roleService)
         {
+            _userMapper = userMapper;
             _userRepository = userRepository;
-            _roleService = roleService;
             _passwordHelper = passwordHelper;
+            _roleService = roleService;
         }
 
         public async Task AddUser(UserCreateOrEdit userCreateOrEdit)
@@ -25,24 +29,8 @@ namespace SkillUpBackend.Service
             {
                 throw new UserAlreadyExitException($"user already present in this email : {userCreateOrEdit.Email}");
             }
-            var user = MapToDomainModel(userCreateOrEdit);
+            var user = await _userMapper.UserCreateOrEditToUser(userCreateOrEdit);
             await _userRepository.AddUser(user);
-        }
-        private User MapToDomainModel(UserCreateOrEdit viewModel)
-        {
-            var user = new User
-            {
-
-                FirstName = viewModel.FirstName,
-                LastName = viewModel.LastName,
-                Email = viewModel.Email.ToLower(),
-                Password = _passwordHelper.HashPassword(viewModel.Password),
-                Role = _roleService.GetRoleById(int.Parse(viewModel.Role)).Result,
-                InsertedBy = "Admin",
-                InsertedOn = DateTime.Now
-            };
-
-            return user;
         }
 
         public async Task<User> ValidateUserCredentials(string email, string password)
@@ -63,10 +51,6 @@ namespace SkillUpBackend.Service
         public async Task DeleteUser(int id)
         {
             var user = await _userRepository.GetUserById(id);
-            if (user == null)
-            {
-                throw new UserNotFoundException();
-            }
             user.IsActive = false;
             await _userRepository.UpdateUser(user);
         }
@@ -74,36 +58,18 @@ namespace SkillUpBackend.Service
         public async Task<UserCreateOrEdit> GetUserById(int id)
         {
             var user = await _userRepository.GetUserById(id);
-            if (!user.IsActive)
-            {
-                throw new UserNotFoundException();
-            }
-            return new UserCreateOrEdit
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth,
-                Qualification = user.Qualification,
-                Email = user.Email,
-                Password = user.Password,
-                Role = user.Role.Name,
-            };
+            return await _userMapper.UserToUserCreateOrEdit(user);
         }
 
         public async Task UpdateUser(int id, UserCreateOrEdit userCreateOrEdit)
         {
             var user = await _userRepository.GetUserById(id);
-            if (!user.IsActive)
-            {
-                throw new UserNotFoundException();
-            }
             user.FirstName = userCreateOrEdit.FirstName;
             user.LastName = userCreateOrEdit.LastName;
             user.DateOfBirth = userCreateOrEdit.DateOfBirth;
             user.Qualification = userCreateOrEdit.Qualification;
             user.UpdatedBy = user.FirstName;
-            user.LastUpdatedOn = DateTime.Now;
+            user.UpdatedOn = DateTime.Now;
             user.Password = _passwordHelper.HashPassword(userCreateOrEdit.Password);
             user.Role = _roleService.GetRoleById(int.Parse(userCreateOrEdit.Role)).Result;
             await _userRepository.UpdateUser(user);

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SkillUpBackend.Model
+namespace SkillUpBackend.ViewModel
 {
     public class UserCreateOrEdit
     {
@@ -23,5 +23,7 @@ namespace SkillUpBackend.Model
         public required string Role { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? Qualification { get; set; }
+        public DateTime? JoinDate { get; set; }
+        public bool IsActive { get; set; }
     }
 }

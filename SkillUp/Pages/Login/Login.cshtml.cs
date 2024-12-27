@@ -9,9 +9,13 @@ namespace SkillUp.Pages.Login
     public class LoginModel : PageModel
     {
         private HttpClient _httpClient;
-        public LoginModel(HttpClient httpClient)
+        private readonly string _apiBaseUrl;
+
+        public LoginModel(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _apiBaseUrl = configuration["ApiBaseUrl"];
+
         }
         [BindProperty]
         public LoginRequest LoginRequest { get; set; }
@@ -19,7 +23,7 @@ namespace SkillUp.Pages.Login
         public async Task<IActionResult> OnPost()
         {
             var jsonContent = new StringContent(JsonConvert.SerializeObject(LoginRequest), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("https://localhost:7202/api/login", jsonContent);
+            var response = await _httpClient.PostAsync($"{_apiBaseUrl}/login", jsonContent);
             if (response.IsSuccessStatusCode)
             {
 

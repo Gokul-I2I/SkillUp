@@ -1,4 +1,4 @@
-﻿namespace SkillUpBackend.Model
+﻿namespace SkillUpBackend.ViewModel
 {
     public class RoleCreateModel
     {

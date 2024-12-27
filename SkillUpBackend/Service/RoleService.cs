@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SkillUpBackend.Model;
 using SkillUpBackend.Repository;
+using SkillUpBackend.ViewModel;
 
 namespace SkillUpBackend.Service
 {

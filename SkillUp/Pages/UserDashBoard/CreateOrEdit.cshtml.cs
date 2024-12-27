@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SkillUpBackend.Model;
+using SkillUpBackend.ViewModel;
 using System.Text;
 
 namespace SkillUp.Pages.UserDashBoard

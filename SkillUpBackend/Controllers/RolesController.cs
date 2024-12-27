@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SkillUpBackend.Model;
 using SkillUpBackend.Service;
+using SkillUpBackend.ViewModel;
 
 namespace SkillUpBackend.Controllers
 {

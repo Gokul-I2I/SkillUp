@@ -12,7 +12,6 @@ namespace SkillUpBackend.Model
 
         [Column(TypeName = "VARCHAR(25)")]
         public required string LastName { get; set; }
-
         public DateTime? DateOfBirth { get; set; }
         [EmailAddress]
         [Column(TypeName = "VARCHAR(50)")]
@@ -28,8 +27,9 @@ namespace SkillUpBackend.Model
         [Column(TypeName = "VARCHAR(25)")]
         public string? UpdatedBy { get; set; }
         public DateTime InsertedOn { get; set; } = DateTime.Now;
-        public DateTime? LastUpdatedOn { get; set; }
-        public int RoleId { get; set; } 
+        public DateTime? UpdatedOn { get; set; }
         public required Role Role { get; set; }
+        public ICollection<BatchUser>? BatchUsers { get; set; }
+        public ICollection<Batch>? Batches { get; set; }
     }
 }

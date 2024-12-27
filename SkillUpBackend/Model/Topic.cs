@@ -9,7 +9,7 @@
         public bool IsActive { get; set; } = true;
         public DateTime CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
-
+        public int StreamId { get; set; }
         // Navigation property for related Subtopics
         public ICollection<Subtopic>? Subtopics { get; set; }
     }

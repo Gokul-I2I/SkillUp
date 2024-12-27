@@ -1,4 +1,5 @@
 ﻿using SkillUpBackend.Model;
+using SkillUpBackend.ViewModel;
 
 namespace SkillUpBackend.Service
 {
