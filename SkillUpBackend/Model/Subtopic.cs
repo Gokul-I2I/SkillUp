@@ -1,4 +1,6 @@
-﻿namespace SkillUpBackend.Model
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+
+namespace SkillUpBackend.Model
 {
     public class Subtopic
     {
@@ -14,5 +16,8 @@
         public bool IsActive { get; set; } = true;
         public DateTime CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
+        public ICollection<UserSubtopic> UserSubtopics { get; set; } = new List<UserSubtopic>();
+
     }
 }

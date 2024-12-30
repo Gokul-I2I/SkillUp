@@ -1,5 +1,7 @@
 ﻿  @page
-@model SkillUp.Pages.Mentor.IndexModel
+@using SkillUpBackend.Model
+ @model SkillUp.Pages.Mentor.IndexModel
+
 
 @{
     ViewData["Title"] = "Mentor Dashboard";
@@ -194,51 +196,236 @@
     <div class="main-content">
         <div class="panel">
             <h3>Welcome, Mentor</h3>
-            <h2>Task Progress</h2>
-            <table class="table table-bordered">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Task</th>
-                        <th>Progress State</th>
-                        <th>Trainees</th>
-                        <th>Due Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Complete Module 1</td>
-                        <td>In Progress</td>
-                        <td>John Doe</td>
-                        <td>12/16/2024</td>
-                        <td>
-                            <button class="btn btn-info btn-sm">Send Alert</button>
-                            <button class="btn btn-warning btn-sm">Add Comment</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Submit Final Report</td>
-                        <td>Completed</td>
-                        <td>Jane Smith</td>
-                        <td>12/6/2024</td>
-                        <td>
-                            <button class="btn btn-info btn-sm">Send Alert</button>
-                            <button class="btn btn-warning btn-sm">Add Comment</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Read Chapter 3</td>
-                        <td>Not Started</td>
-                        <td>Michael Brown</td>
-                        <td>12/23/2024</td>
-                        <td>
-                            <button class="btn btn-info btn-sm">Send Alert</button>
-                            <button class="btn btn-warning btn-sm">Add Comment</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+
+            <!-- Task Summary Cards -->
+            <div class="row text-center">
+                <!-- Unassigned Tasks -->
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-sm" data-bs-toggle="modal" data-bs-target="#unassignedModal" style="cursor: pointer;">
+                        <div class="card-body">
+                            <h5 class="card-title">Unassigned</h5>
+                            <h2 class="display-5 text-primary">@Model.StateCount.OpenCount</h2>
+                            <p class="text-muted">Unassigned Tasks</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- In Progress Tasks -->
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-sm" data-bs-toggle="modal" data-bs-target="#inProgressModal" style="cursor: pointer;">
+                        <div class="card-body">
+                            <h5 class="card-title">In Progress</h5>
+                            <h2 class="display-5 text-info">@Model.StateCount.InProgressCount</h2>
+                            <p class="text-muted">Tasks in Progress</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Tasks -->
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-sm" data-bs-toggle="modal" data-bs-target="#completedModal" style="cursor: pointer;">
+                        <div class="card-body">
+                            <h5 class="card-title">Completed</h5>
+                            <h2 class="display-5 text-success">@Model.StateCount.CompletedCount</h2>
+                            <p class="text-muted">Tasks Completed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Completed Tasks -->
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-sm" data-bs-toggle="modal" data-bs-target="#ReviewModal" style="cursor: pointer;">
+                        <div class="card-body">
+                            <h5 class="card-title">Review</h5>
+                            <h2 class="display-5 text-warning">@Model.StateCount.ReviewCount</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <!-- Modals -->
+            <!-- Unassigned Modal -->
+            <div class="modal fade" id="unassignedModal" tabindex="-1" aria-labelledby="unassignedModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="unassignedModalLabel">Unassigned Tasks</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (Model.StateCount.UnassignedTrainees.Any())
+                            {
+                                <ul>
+                                    @foreach (var task in Model.StateCount.UnassignedTrainees)
+                                    {
+                                        <li>@task.Subtopic.Name - @task.Subtopic.Description</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p>No unassigned tasks available.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- In Progress Modal -->
+            <div class="modal fade" id="inProgressModal" tabindex="-1" aria-labelledby="inProgressModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="inProgressModalLabel">Tasks in Progress</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (Model.StateCount.InProgressTrainees.Any())
+                            {
+                                <ul>
+                                    @foreach (var task in Model.StateCount.InProgressTrainees)
+                                    {
+                                        <li>@task.Subtopic.Name - @task.Subtopic.Description</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p>No tasks in progress.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Modal -->
+            <div class="modal fade" id="completedModal" tabindex="-1" aria-labelledby="completedModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="completedModalLabel">Completed Tasks</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (Model.StateCount.CompletedTrainees.Any())
+                            {
+                                <ul>
+                                    @foreach (var task in Model.StateCount.CompletedTrainees)
+                                    {
+                                        <li>@task.Subtopic.Name - @task.Subtopic.Description</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <p>No tasks completed yet.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Completed Modal -->
+            <div class="modal fade" id="ReviewModal" tabindex="-1" aria-labelledby="ReviewModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ReviewModalLabel">To be Reviewed</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (Model.StateCount.ReviewCount > 0)
+                            {
+                                <p>There are @Model.StateCount.ReviewCount tasks in Review this week.</p>
+                            }
+                            else
+                            {
+                                <p>Nothing to be reviewed this week.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <h2>Task Progress</h2>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Topic</th>
+                <th>Subtopic</th>
+                <th>Trainee</th>
+                <th>State</th>
+                <th>Due Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Topics == null || !Model.Topics.Any())
+            {
+                <tr>
+                    <td colspan="6">No topics available.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var topic in Model.Topics)
+                {
+                    if (topic.Subtopics == null || !topic.Subtopics.Any())
+                    {
+                        Console.WriteLine($"No Subtopics found for Topic: {topic.Name}");
+                        continue;
+                    }
+
+                    foreach (var subtopic in topic.Subtopics)
+                    {
+                        // Filter UserSubtopics for the current subtopic
+                        var userSubtopics = Model.UserSubtopics?
+                        .Where(us => us.SubtopicId == subtopic.Id)
+                        .ToList();
+
+                        if (userSubtopics == null || !userSubtopics.Any())
+                        {
+                            Console.WriteLine($"No UserSubtopics found for Subtopic ID: {subtopic.Id}");
+                            continue;
+                        }
+
+                        foreach (var userSubtopic in userSubtopics)
+                        {
+                            // Check for null UserName or missing details
+                         @*    if (string.IsNullOrEmpty(userSubtopic.UserName))
+                            {
+                                Console.WriteLine($"UserName is missing for UserSubtopic with Subtopic ID: {userSubtopic.SubtopicId}");
+                                continue;
+                            } *@
+
+                            <tr>
+                                <td>@topic.Name</td>
+                                <td>@subtopic.Name</td>
+                                <td>@userSubtopic.Username</td>                          
+                                <td>
+                                    <form method="post" asp-page-handler="ChangeState">
+                                        <input type="hidden" name="userId" value="@userSubtopic.UserId" />
+                                        <input type="hidden" name="subtopicId" value="@userSubtopic.SubtopicId" />
+                                        <select name="state" class="form-select form-select-sm">
+                                            @foreach (var state in Enum.GetValues(typeof(TaskState)).Cast<TaskState>())
+                                            {
+                                                <option value="@state" selected="@(userSubtopic.State == state)">
+                                                    @state
+                                                </option>
+                                            }
+                                        </select>
+                                        <button type="submit" class="btn btn-success btn-sm mt-1">Save</button>
+                                    </form>
+                                </td>
+                                <td>@(userSubtopic?.DueDate?.ToShortDateString() ?? "Not Set")</td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </tbody>
+
+    </table>
+
         <div class="row justify-content-center mt-4">
             <!-- Manage Topics Panel -->
             <div class="col-md-4">
@@ -272,11 +459,38 @@
             
         </div>
         </div>
+        </div>
 </body>
 </html>
 
 
         <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const saveButtons = document.querySelectorAll(".save-state");
+
+        saveButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const traineeId = this.dataset.traineeId;
+                const form = document.getElementById(`stateForm-${traineeId}`);
+                const formData = new FormData(form);
+
+                fetch('/Mentor/Index?handler=ChangeState', { // Correct URL to your handler
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("State updated successfully.");
+                            window.location.reload();
+                        } else {
+                            alert("Error updating state. Please try again.");
+                        }
+                    })
+                    .catch(err => console.error("Error:", err));
+            });
+        });
+    });
+
             function AddTopic() {
                 // Navigate to Add Topic page (you may create an AddTopic Razor page for this)
                 window.location.href = '@Url.Page("AddTopic")';
@@ -284,5 +498,16 @@
             function manageSubTopics() {
                 window.location.href = '@Url.Page("ManageSubtopic")';
             }
+    function showComponent(componentId) {
+        // Hide all component sections
+        const sections = document.querySelectorAll('.component-section');
+        sections.forEach(section => section.style.display = 'none');
+
+        // Show the selected component section
+        const selectedSection = document.getElementById(componentId);
+        if (selectedSection) {
+            selectedSection.style.display = 'block';
+        }
+    }
         </script>
 

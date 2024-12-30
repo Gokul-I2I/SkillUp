@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using SkillUp.Pages.Login;
 using SkillUp.Services;
+using SkillUpBackend.Service;
+using SkillUpBackend;
 
 namespace SkillUp
 {
@@ -50,6 +53,7 @@ namespace SkillUp
                 context.Response.Redirect("Login/login");
             });
 
+            // Rest of your configuration...
             // Map Razor Pages
             app.MapRazorPages();
             app.Run();

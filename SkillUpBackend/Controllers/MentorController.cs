@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Mono.TextTemplating;
 using SkillUpBackend.Model;
 using SkillUpBackend.Service;
+using SkillUpBackend.ViewModel;
+using System.Text.RegularExpressions;
+using System;
 
 
 namespace SkillUpBackend.Controllers
@@ -10,11 +15,13 @@ namespace SkillUpBackend.Controllers
     public class MentorController : ControllerBase
     {
         private readonly IMentorService _service;
+        private readonly IUserSubtopicService _userSubtopicService;
 
         // Inject the service into the controller
-        public MentorController(IMentorService service)
+        public MentorController(IMentorService service, IUserSubtopicService userSubtopicService)
         {
             _service = service;
+            _userSubtopicService = userSubtopicService;
         }
 
         // GET: api/mentor/topics
@@ -150,5 +157,77 @@ namespace SkillUpBackend.Controllers
             _service.DeleteSubtopic(id);
             return Ok(new { success = true, message = "Subtopic deleted successfully." });
         }
+        [HttpGet("usersubtopics")]
+        public async Task<IActionResult> GetUserSubtopics()
+        {
+            try
+            {
+                var userSubtopics = await _userSubtopicService.GetUserSubtopicsAsync();
+                if (userSubtopics == null || !userSubtopics.Any())
+                {
+                    return NotFound(new { success = false, message = "No user subtopics found." });
+                }
+
+                // Map the data to the DTO
+                var userSubtopicDtos = userSubtopics.Select(us => new UserSubtopicDto
+                {
+                    UserSubtopicId = $"{us.UserId}-{us.SubtopicId}", // Composite key representation
+                    SubtopicId = us.SubtopicId,
+                    SubtopicName = us.Subtopic.Name,
+                    UserId = us.UserId,
+                    UserName = $"{us.User.FirstName} {us.User.LastName}",
+                    State = us.State,
+                    DueDate = us.DueDate,
+                    AssignedOn = us.AssignedOn
+                }).ToList();
+
+                return Ok(new { success = true, userSubtopics = userSubtopicDtos });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, error = ex.Message });
+            }
+        }
+
+        // PUT: api/mentor/usersubtopic/state
+        [HttpPut("usersubtopic/state")]
+        public async Task<IActionResult> UpdateUserSubtopicState([FromBody] UpdateStateRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest(new { success = false, error = "Invalid request data." });
+                }
+
+                var result = await _userSubtopicService.UpdateUserSubtopicStateAsync(
+                    request.UserId,
+                    request.SubtopicId,
+                    request.State
+                );
+
+                if (result)
+                {
+                    return Ok(new { success = true, message = "User subtopic state updated successfully." });
+                }
+                else
+                {
+                    return NotFound(new { success = false, message = "User subtopic not found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, error = ex.Message });
+            }
+        }
+
+        public class UpdateStateRequest
+        {
+            public int UserId { get; set; }
+            public int SubtopicId { get; set; }
+            public TaskState State { get; set; }
+        }
     }
 }
+    
+

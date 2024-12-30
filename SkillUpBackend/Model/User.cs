@@ -31,5 +31,6 @@ namespace SkillUpBackend.Model
         public required Role Role { get; set; }
         public ICollection<BatchUser>? BatchUsers { get; set; }
         public ICollection<Batch>? Batches { get; set; }
+        public ICollection<UserSubtopic> UserSubtopics { get; set; } = new List<UserSubtopic>();
     }
 }

@@ -14,11 +14,15 @@ namespace SkillUpBackend
         public DbSet<User> Users { get; set; }
         public DbSet<Topic> Topics { get; set; }
         public DbSet<Subtopic> Subtopics { get; set; }
+        public DbSet<UserSubtopic> UserSubtopics { get; set; }
+
         public DbSet<Batch> Batches { get; set; }
         public DbSet<StreamModel> Streams { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<UserSubtopic>()
+       .HasKey(us => new { us.UserId, us.SubtopicId }); // Ensure composite key is defined.
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
@@ -35,6 +39,9 @@ namespace SkillUpBackend
             modelBuilder.Entity<Role>()
                 .Property(r => r.Id)
                 .ValueGeneratedOnAdd();
+            modelBuilder.Entity<UserSubtopic>()
+                .Property(us => us.State)
+                .HasConversion<string>();
 
             //modelBuilder.Entity<User>()
             //    .HasOne(u => u.Role) 
@@ -49,7 +56,7 @@ namespace SkillUpBackend
                 .ValueGeneratedOnAdd();
             // User-Batch mapping
             modelBuilder.Entity<BatchUser>()
-                .HasKey(ub => new { ub.UserId, ub.BatchId }); 
+                .HasKey(ub => new { ub.UserId, ub.BatchId });
 
             modelBuilder.Entity<BatchUser>()
                 .HasOne(ub => ub.User)

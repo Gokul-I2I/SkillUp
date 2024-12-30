@@ -67,6 +67,7 @@ namespace SkillUpBackend.Repository
                     UpdatedOn = s.UpdatedOn
                 })
                 .ToList();
+
         }
 
         public Subtopic? GetSubtopicById(int id)
