@@ -14,6 +14,9 @@ namespace SkillUpBackend
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllers();
+            builder.Services.AddRazorPages();
+            builder.Services.AddHttpClient();
+
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

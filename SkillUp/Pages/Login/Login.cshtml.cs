@@ -15,6 +15,8 @@ namespace SkillUp.Pages.Login
         }
         [BindProperty]
         public LoginRequest LoginRequest { get; set; }
+        public string ErrorMessage { get; set; }
+
 
         public async Task<IActionResult> OnPost()
         {
@@ -41,10 +43,7 @@ namespace SkillUp.Pages.Login
                     }
                 }
             }
-            if (!response.IsSuccessStatusCode)
-            {
-                return Page();
-            }
+            ErrorMessage = "Invalid email or password. Please try again.";
             return Page();
         }
     }

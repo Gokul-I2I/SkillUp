@@ -1,37 +1,37 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using SkillUpBackend.Model;
+using SkillUpBackend.ViewModel;
 
-namespace SkillUp.Pages.UserDashBoard
+namespace SkillUp.Pages.Batch
 {
     public class IndexModel : PageModel
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiBaseUrl;
-        public IEnumerable<User> Users { get; set; }
 
-        public IndexModel(HttpClient httpClient, IConfiguration configuration)
+        public ICollection<BatchViewModel> BatchViewModels { get; set; }
+        public IndexModel(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("MyHttpClient");
             _apiBaseUrl = configuration["ApiBaseUrl"];
 
         }
-
-        // OnGetAsync method fetches user data from the API
-        public async Task OnGetAsync()
+        public async void OnGet()
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/user");
+                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/batch");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse<List<User>>>(content);
-                    Users = apiResponse.Result;
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse<List<BatchViewModel>>>(content);
+                    BatchViewModels = apiResponse.Result;
                 }
             }
             catch (Exception ex)
             {
+                return;
             }
         }
     }

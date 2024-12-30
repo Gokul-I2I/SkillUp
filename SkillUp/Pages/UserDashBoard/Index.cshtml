@@ -26,31 +26,41 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach (var user in Model.Users)
-                {
-                    <tr>
-                        <td>@user.FirstName</td>
-                        <td>@user.LastName</td>
-                        <td>@user.Email</td>
-                        <td>@user.IsActive</td>
-                        <td>@user.Role?.Name</td>
-                        @if (user.IsActive)
-                        {
-                            <td>
-                                <a class="btn btn-warning" id="edit" asp-page="CreateOrEdit" asp-route-id="@user.Id">Edit</a>
-                                <button class="btn btn-danger" id="delete" type="submit" onclick="confirmDelete(@user.Id)">Delete</button>
-                            </td>
-                        }
-                        else
-                        {
-                            <td>
-                                <button class=" btn btn-secondary" id="active" type="button" onclick="confirmActive(@user.Id)">Active</button>
-                            </td>
-                        }
-                    </tr>
-                }
-            </tbody>
+            @if (Model.Users != null && Model.Users.Any())
+            {
+                <tbody>
+
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>@user.FirstName</td>
+                            <td>@user.LastName</td>
+                            <td>@user.Email</td>
+                            <td>@user.IsActive</td>
+                            <td>@user.Role?.Name</td>
+                            @if (user.IsActive)
+                            {
+                                <td>
+                                    <a class="btn btn-warning" id="edit" asp-page="CreateOrEdit" asp-route-id="@user.Id">Edit</a>
+                                    <button class="btn btn-danger" id="delete" type="submit" onclick="confirmDelete(@user.Id)">Delete</button>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <button class=" btn btn-secondary" id="active" type="button" onclick="confirmActive(@user.Id)">Active</button>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 20px;">No data available</td>
+                </tr>
+            }
         </table>
     </div>
 </body>

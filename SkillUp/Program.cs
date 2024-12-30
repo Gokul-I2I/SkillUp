@@ -33,6 +33,10 @@ namespace SkillUp
                         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                     });
             });
+            builder.Services.AddHttpClient("MyHttpClient", client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(30);  
+            });
             var app = builder.Build();
 
             app.UseCors("AllowAll");
@@ -50,7 +54,7 @@ namespace SkillUp
             // Default route should map to login page
             app.MapGet("/", async context =>
             {
-                context.Response.Redirect("Login/login");
+                context.Response.Redirect("login/login");
             });
 
             // Rest of your configuration...

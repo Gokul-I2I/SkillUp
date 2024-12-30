@@ -82,6 +82,5 @@ namespace SkillUpBackend
                 .WithMany(s => s.BatchStreams)
                 .HasForeignKey(bs => bs.StreamId);
         }
-        public DbSet<SkillUpBackend.Model.Batch> Batch { get; set; } = default!;
     }
 }

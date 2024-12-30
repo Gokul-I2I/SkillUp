@@ -31,7 +31,14 @@
                     </div>
                     <input type="password" id="Password" name="Password" class="form-control" required />
                 </div>
-                <br />
+                
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="error-message" style="color: red;">
+                        @Model.ErrorMessage
+                        <br />
+                    </div>
+                }
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
         </div>
