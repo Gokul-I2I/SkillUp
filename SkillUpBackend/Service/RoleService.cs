@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SkillUpBackend.Model;
+﻿using SkillUpBackend.Model;
 using SkillUpBackend.Repository;
 using SkillUpBackend.ViewModel;
 
@@ -17,7 +16,7 @@ namespace SkillUpBackend.Service
         {
             var role = MapToDomainModel(roleCreateModel);
             await _roleRepository.AddRole(role);
-            
+
         }
         private Role MapToDomainModel(RoleCreateModel roleCreate)
         {
@@ -33,7 +32,7 @@ namespace SkillUpBackend.Service
 
         public async Task<IEnumerable<Role>> GetAllRoles()
         {
-            return  await _roleRepository.GetAllRoles();
+            return await _roleRepository.GetAllRoles();
         }
 
         public Task<Role> GetRoleById(int id)
@@ -46,7 +45,7 @@ namespace SkillUpBackend.Service
             if (role == null)
             {
                 throw new Exception();
-            }  
+            }
             role.IsActive = false;
             _roleRepository.UpdateRole(role);
         }

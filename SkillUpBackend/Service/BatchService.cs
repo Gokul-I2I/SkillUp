@@ -47,7 +47,7 @@ namespace SkillUpBackend.Service
             return await _batchRepository.GetBatchByIdWithUsers(id);
         }
 
-        public async Task<List<Batch>> GetBatches()
+        public async Task<IEnumerable<Batch>> GetBatches()
         {
             return await _batchRepository.GetBatches();
         }

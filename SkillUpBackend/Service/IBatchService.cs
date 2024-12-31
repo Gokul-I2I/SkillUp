@@ -8,7 +8,7 @@ namespace SkillUpBackend.Service
         Task<int> CreateBatch(BatchCreateOrEdit batchCreateOrEdit);
         Task DeleteBatch(int id);
         Task<Batch> GetBatchById(int id);
-        Task<List<Batch>> GetBatches();
+        Task<IEnumerable<Batch>> GetBatches();
         Task UpdateBatch(int id, BatchCreateOrEdit batchCreateOrEdit);
         Task<BatchViewModel> GetBatchByIdWithUsers(int id);
         Task AddUserToBatch(BatchCreateOrEdit batchCreateOrEdit, int id);

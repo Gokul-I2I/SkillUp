@@ -11,9 +11,9 @@ namespace SkillUpBackend.Repository
         {
             _context = context;
         }
-        public async Task AddStream(StreamModel stream)
+        public async Task AddStream(StreamModel streamModel)
         {
-            await _context.Streams.AddAsync(stream);
+            await _context.Streams.AddAsync(streamModel);
             await _context.SaveChangesAsync();
         }
 
@@ -35,6 +35,7 @@ namespace SkillUpBackend.Repository
         public async Task UpdateStream(StreamModel streamModel)
         {
             _context.Streams.Update(streamModel);
+            await _context.SaveChangesAsync();
         }
     }
 }

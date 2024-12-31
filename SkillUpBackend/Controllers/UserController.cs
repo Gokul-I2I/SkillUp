@@ -15,7 +15,6 @@ namespace SkillUpBackend.Controllers
         {
             _userService = userService;
         }
-        // Get : Users
         [HttpGet]
         public ActionResult<IEnumerable<User>> GetUsers()
         {
@@ -101,7 +100,6 @@ namespace SkillUpBackend.Controllers
             }
         }
 
-        // Delete: Users/Delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {

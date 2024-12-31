@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Mono.TextTemplating;
 using SkillUpBackend.Model;
 using SkillUpBackend.Service;
-using SkillUpBackend.ViewModel;
-using System.Text.RegularExpressions;
-using System;
 
 
 namespace SkillUpBackend.Controllers
@@ -229,5 +224,5 @@ namespace SkillUpBackend.Controllers
         }
     }
 }
-    
+
 

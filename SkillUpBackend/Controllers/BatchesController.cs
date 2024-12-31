@@ -16,9 +16,8 @@ namespace SkillUpBackend.Controllers
             _batchService = batchService;
         }
 
-        // GET: api/Batches
         [HttpGet]
-        public async Task<ActionResult<List<Batch>>> GetBatches()
+        public async Task<ActionResult<IEnumerable<Batch>>> GetBatches()
         {
             try
             {
@@ -35,7 +34,6 @@ namespace SkillUpBackend.Controllers
             }
         }
 
-        // GET: api/Batches/5/Users
         [HttpGet("{id}/Users")]
         public async Task<ActionResult<BatchViewModel>> GetBatchByIdWithUsers(int id)
         {
@@ -54,7 +52,6 @@ namespace SkillUpBackend.Controllers
             }
         }
 
-        // PUT: api/Batches/5
         [HttpPut("{id}")]
         public async Task<ActionResult<Batch>> UpdateBatch(int id, BatchCreateOrEdit batchCreateOrEdit)
         {
@@ -69,7 +66,6 @@ namespace SkillUpBackend.Controllers
             }
         }
 
-        // POST: api/Batches
         [HttpPost]
         public async Task<ActionResult> CreateBatch(BatchCreateOrEdit batchCreateOrEdit)
         {
@@ -84,7 +80,6 @@ namespace SkillUpBackend.Controllers
             }
         }
 
-        // DELETE: api/Batches/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBatch(int id)
         {

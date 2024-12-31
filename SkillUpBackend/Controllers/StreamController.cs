@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SkillUpBackend.CustomException;
+using SkillUpBackend.Model;
+using SkillUpBackend.Service;
+using SkillUpBackend.ViewModel;
 
 namespace SkillUpBackend.Controllers
 {
@@ -6,31 +10,88 @@ namespace SkillUpBackend.Controllers
     [ApiController]
     public class StreamController : ControllerBase
     {
-        public StreamController() { }   
-        [HttpGet]
-        public async Task<ActionResult<List<Stream>>> GetAllStreams()
+        private IStreamService _streamService;
+        public StreamController(StreamService streamService)
         {
-            throw new NotImplementedException();
+            _streamService = streamService;
+        }
+        [HttpGet]
+        public async Task<ActionResult<List<StreamModel>>> GetAllStreams()
+        {
+            try
+            {
+                var streams = await _streamService.GetAllStreams();
+                return Ok(streams);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpGet("{id}")]
-        public void GetStreamById(int id)
+        public async Task<ActionResult<StreamModel>> GetStreamById(int id)
         {
+            try
+            {
+                var streamModel = await _streamService.GetStreamById(id);
+                return Ok(streamModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public void Post([FromBody] Stream stream)
+        public async Task<ActionResult> AddStream(StreamCreateOrEdit stream)
         {
+            try
+            {
+                await _streamService.AddStream(stream);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Stream stream)
+        public async Task<ActionResult> UpdateStream(int id, StreamCreateOrEdit streamModel)
         {
+            try
+            {
+                await _streamService.UpdateStream(id, streamModel);
+                return Ok();
+            }
+            catch (StreamNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> DeleteStream(int id)
         {
+            try
+            {
+                await _streamService.DeleteStream(id);
+                return NoContent();
+            }
+            catch (StreamNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
         }
     }
 }

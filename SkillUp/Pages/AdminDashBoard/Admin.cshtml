@@ -6,23 +6,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="~/css/AdminDashBoard.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #f9f9f9; /* Light grayish white */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header Section */
+        .header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 2rem;
+            font-weight: bold;
+            color: darkblue;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        /* Cards Container */
+        .cards-container {
+            display: flex;
+            gap: 40px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            width: 250px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+            .action-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            }
+
+            .action-card h2 {
+                margin: 15px 0 0;
+                font-size: 1.6rem;
+                font-weight: bold;
+                color: darkblue;
+            }
+
+            .action-card p {
+                margin-top: 8px;
+                font-size: 0.9rem;
+                color: #6c757d; /* Muted gray */
+            }
+
+            /* Unique Icon Styles */
+            .action-card .icon {
+                font-size: 3rem;
+                margin-bottom: 10px;
+                border-radius: 50%;
+                width: 80px;
+                height: 80px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+        .user-management .icon {
+            background: blue;
+            color: #ffffff;
+        }
+
+        .user-management:hover p {
+            color: blue;
+        }
+
+        .batch-management .icon {
+            background: purple; /* Purple */
+            color: #ffffff;
+        }
+
+        .batch-management:hover p {
+            color: purple;
+        }
+
+        .stream-view .icon {
+            background: green; /* Green */
+            color: #ffffff;
+        }
+
+        /* Hover with text change */
+        .stream-view:hover p {
+            color: green;
+        }
+
+        .disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <div class="side-nav">
-        <button id="userButton">User Management</button>
-        <button id="batchButton">Batch Management</button>
-        <button disabled id="streamButton">View Stream</button>
+    <!-- Welcome Message -->
+    <div class="header">
+        <h3>Welcome Admin</h3>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <h1 id="welcomeMessage">Welcome Admin</h1>
+        <div class="cards-container">
+            <div class="action-card user-management" onclick="">
+                <div class="icon">👤</div>
+                <h2>User Management</h2>
+                <p>Manage all platform users</p>
+            </div>
+            <div class="action-card batch-management" onclick="">
+                <div class="icon">📋</div>
+                <h2>Batch Management</h2>
+                <p>Organize and edit batches</p>
+                <p>Page under construction</p>
+            </div>
+            <div class="action-card stream-view disabled">
+                <div class="icon">💻</div>
+                <h2>Stream Management</h2>
+                <p>Explore Java, Python, C++</p>
+                <p>Coming Soon</p>
+            </div>
+        </div>
     </div>
+
     <script src="~/js/AdminDashBoard.js"></script>
 </body>
 </html>

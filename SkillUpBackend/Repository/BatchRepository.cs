@@ -15,7 +15,7 @@ namespace SkillUpBackend.Repository
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-        public async Task<List<Batch>> GetBatches()
+        public async Task<IEnumerable<Batch>> GetBatches()
         {
             try
             {

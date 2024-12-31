@@ -1,7 +1,7 @@
 ﻿@page
-@model SkillUp.Pages.Batch.IndexModel
+@model SkillUp.Pages.BatchDashBoard.IndexModel
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "Batch";
     Layout = null;
 }
 <head>
@@ -26,22 +26,22 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.BatchViewModels != null)
+                @if (Model.Batch != null && Model.Batch.Any())
                 {
-                    @foreach (var batch in Model.BatchViewModels)
+                    @foreach (var batch in Model.Batch)
                     {
                         <tr>
-                            <td>@batch.BatchName</td>
+                            <td>@batch.Name</td>
                             <td>@batch.IsActive</td>
                             <td>
                                 @if (batch.IsActive)
                                 {
-                                    <a class="btn btn-warning" asp-page="CreateOrEdit" asp-route-id="@batch.BatchId">Edit</a>
-                                    <button class="btn btn-danger" type="button" onclick="confirmDeactivate(@batch.BatchId)">Deactivate</button>
+                                    <a class="btn btn-warning" asp-page="CreateOrEdit" asp-route-id="@batch.Id">Edit</a>
+                                    <button class="btn btn-danger" type="button" onclick="confirmDeactivate(@batch.Id)">Deactivate</button>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-secondary" type="button" onclick="confirmActive(@batch.BatchId)">Activate</button>
+                                    <button class="btn btn-secondary" type="button" onclick="confirmActive(@batch.Id)">Activate</button>
                                 }
                             </td>
                         </tr>

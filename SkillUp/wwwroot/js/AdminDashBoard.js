@@ -1,19 +1,13 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
-    const userButton = document.getElementById("userButton");
-    if (userButton) {
-        userButton.addEventListener("click", () => {
-            window.location.href = "/UserDashBoard/Index"; 
-        });
-    } else {
-        console.error("User button not found.");
-    }
+ 
+    const userManagementCard = document.querySelector(".user-management");
+    userManagementCard.addEventListener("click", function () {
+        window.location.href = "/UserDashBoard/Index"; 
+    });
 
-    const batchButton = document.getElementById("batchButton");
-    if (batchButton) {
-        batchButton.addEventListener("click", () => {
-            window.location.href = "/Batch/Index"; 
-        });
-    } else {
-        console.error("Batch button not found.");
-    }
+    const batchManagementCard = document.querySelector(".batch-management");
+    batchManagementCard.addEventListener("click", function () {
+        window.location.href = "/BatchDashBoard/Index"; 
+    });
+  
 });

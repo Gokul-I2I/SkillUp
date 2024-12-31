@@ -16,12 +16,8 @@ namespace SkillUpBackend
             builder.Services.AddControllers();
             builder.Services.AddRazorPages();
             builder.Services.AddHttpClient();
-
-
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            builder.Services.AddRazorPages();
-
 
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IRoleService, RoleService>();
@@ -30,7 +26,6 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
             builder.Services.AddScoped<PasswordHelper>();
             builder.Services.AddScoped<IMentorService, MentorService>();
             builder.Services.AddScoped<IMentorRepository, MentorRepository>();
-
             builder.Services.AddScoped<IUserSubtopicService, UserSubtopicService>();
             builder.Services.AddScoped<IBatchRepository, BatchRepository>();
             builder.Services.AddScoped<IBatchService, BatchService>();

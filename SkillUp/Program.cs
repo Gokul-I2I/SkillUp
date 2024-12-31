@@ -57,8 +57,6 @@ namespace SkillUp
                 context.Response.Redirect("login/login");
             });
 
-            // Rest of your configuration...
-            // Map Razor Pages
             app.MapRazorPages();
             app.Run();
         }
