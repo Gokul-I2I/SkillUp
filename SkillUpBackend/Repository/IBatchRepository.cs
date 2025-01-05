@@ -9,7 +9,7 @@ namespace SkillUpBackend.Repository
     {
         Task<int> CreateBatch(Batch batch);
         Task<Batch> GetBatchById(int id);
-        Task<IEnumerable<Batch>> GetBatches();
+        Task<List<Batch>> GetBatches();
         Task UpdateBatch(Batch batch);
         Task<BatchViewModel> GetBatchByIdWithUsers(int id);
         Task AddUserToBatch(BatchCreateOrEdit batchCreateOrEdit);

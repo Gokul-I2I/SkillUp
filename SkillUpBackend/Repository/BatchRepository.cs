@@ -15,7 +15,7 @@ namespace SkillUpBackend.Repository
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-        public async Task<IEnumerable<Batch>> GetBatches()
+        public async Task<List<Batch>> GetBatches()
         {
             try
             {
@@ -56,7 +56,7 @@ namespace SkillUpBackend.Repository
             {
                 using var connection = new SqlConnection(_connectionString);
                 await connection.OpenAsync();
-                using var command = new SqlCommand("CreateBatch", connection)
+                using var command = new SqlCommand("[dbo].[CreateBatch]", connection)
                 {
                     CommandType = CommandType.StoredProcedure
                 };
@@ -64,14 +64,13 @@ namespace SkillUpBackend.Repository
                 command.Parameters.AddWithValue("@IsActive", batch.IsActive);
                 command.Parameters.AddWithValue("@InsertedBy", batch.InsertedBy);
                 command.Parameters.AddWithValue("@UpdatedBy", batch.UpdatedBy ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@UpdatedOn", batch.UpdatedOn);
+                command.Parameters.AddWithValue("@UpdatedOn", batch.UpdatedOn ?? (object)DBNull.Value);
 
                 SqlParameter outputParam = new SqlParameter("@BatchId", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
                 command.Parameters.Add(outputParam);
-
                 await command.ExecuteNonQueryAsync();
                 return (int)outputParam.Value;
             }
@@ -144,91 +143,123 @@ namespace SkillUpBackend.Repository
                 }
 
             }
-            if (batchViewModel.BatchId == 0)
-            {
-                throw new BatchNotFoundException();
-            }
             return batchViewModel;
         }
 
         public async Task<Batch> GetBatchById(int id)
         {
-            Batch batch;
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                using var command = new SqlCommand("GetAllActiveBatches", connection)
-                {
-                    CommandType = CommandType.StoredProcedure
-                };
-                using var reader = await command.ExecuteReaderAsync();
-                batch = new Batch()
-                {
-                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                    Name = reader.GetString(reader.GetOrdinal("Name")),
-                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                    InsertedBy = reader.GetString(reader.GetOrdinal("InsertedBy"))
-                };
-            }
-            if (batch == null)
-            {
-                throw new BatchNotFoundException();
-            }
-            return batch;
 
+                using (var command = new SqlCommand("GetBatchById", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@BatchId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            // Safely handle potential NULL values from database
+                            var batch = new Batch()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                InsertedBy = reader.GetString(reader.GetOrdinal("InsertedBy")),
+                                UpdatedBy = reader.IsDBNull(reader.GetOrdinal("UpdatedBy")) ? null : reader.GetString(reader.GetOrdinal("UpdatedBy")),
+                                InsertedOn = reader.GetDateTime(reader.GetOrdinal("InsertedOn")),
+                                UpdatedOn = reader.IsDBNull(reader.GetOrdinal("UpdatedOn")) ? (DateTime?)null : reader.GetDateTime(reader.GetOrdinal("UpdatedOn"))
+                            };
+
+                            return batch;
+                        }
+                        else
+                        {
+                            throw new BatchNotFoundException();  // If no rows found, throw a custom exception
+                        }
+                    }
+                }
+            }
         }
-
         public async Task AddUserToBatch(BatchCreateOrEdit batchCreateOrEdit)
         {
-            using var connection = new SqlConnection(_connectionString);
-            await connection.OpenAsync();
-            foreach (var userId in batchCreateOrEdit.UserId)
+            try
             {
-                using var command = new SqlCommand("AddUserToBatch", connection)
+                using var connection = new SqlConnection(_connectionString);
+                await connection.OpenAsync();
+                foreach (var userId in batchCreateOrEdit.UserId)
                 {
-                    CommandType = CommandType.StoredProcedure
-                };
-                command.Parameters.AddWithValue("@UserId", userId);
-                command.Parameters.AddWithValue("@BatchId", batchCreateOrEdit.Id);
-                command.Parameters.AddWithValue("@InsertedBy", batchCreateOrEdit.InsertedBy);
-                await command.ExecuteNonQueryAsync();
+                    using var command = new SqlCommand("[dbo].[AddUserToBatch]", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@BatchId", batchCreateOrEdit.Id);
+                    command.Parameters.AddWithValue("@InsertedBy", batchCreateOrEdit.InsertedBy);
+                    command.Parameters.AddWithValue("@InsertedOn", batchCreateOrEdit.InsertedOn);
+                    command.Parameters.AddWithValue("@JoinDate", batchCreateOrEdit.JoinDate);
+                    command.Parameters.AddWithValue("@IsActive", batchCreateOrEdit.IsActive);
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
             }
         }
 
         public async Task RemoveUserFromBatch(BatchCreateOrEdit batchCreateOrEdit)
         {
-            using var connection = new SqlConnection(_connectionString);
-            await connection.OpenAsync();
-            foreach (var userId in batchCreateOrEdit.UserId)
+            try
             {
-                using var command = new SqlCommand("RemoveUserFromBatch", connection)
+                using var connection = new SqlConnection(_connectionString);
+                await connection.OpenAsync();
+                foreach (var userId in batchCreateOrEdit.UserId)
                 {
-                    CommandType = CommandType.StoredProcedure
-                };
-                command.Parameters.AddWithValue("@UserId", userId);
-                command.Parameters.AddWithValue("@BatchId", batchCreateOrEdit.Id);
-                command.Parameters.AddWithValue("@UpdatedBy", batchCreateOrEdit.UpdatedBy);
-                command.Parameters.AddWithValue("@UpdatedOn", DateTime.Now);
-                await command.ExecuteNonQueryAsync();
+                    using var command = new SqlCommand("RemoveUserFromBatch", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@BatchId", batchCreateOrEdit.Id);
+                    command.Parameters.AddWithValue("@UpdatedBy", batchCreateOrEdit.UpdatedBy);
+                    command.Parameters.AddWithValue("@UpdatedOn", batchCreateOrEdit.UpdatedOn);
+                    command.Parameters.AddWithValue("IsActive", batchCreateOrEdit.IsActive);
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
             }
         }
 
         public async Task ActiveUser(Collection<int> excitingUser, int batchId)
         {
-            using var connection = new SqlConnection(_connectionString);
-            await connection.OpenAsync();
-            foreach (var userId in excitingUser)
+            try
             {
-                using var command = new SqlCommand("ActiveUser", connection)
+                using var connection = new SqlConnection(_connectionString);
+                await connection.OpenAsync();
+                foreach (var userId in excitingUser)
                 {
-                    CommandType = CommandType.StoredProcedure
-                };
-                command.Parameters.AddWithValue("@UserId", userId);
-                command.Parameters.AddWithValue("@BatchId", batchId);
-                command.Parameters.AddWithValue("@UpdatedBy", "admin");
-                command.Parameters.AddWithValue("@UpdatedOn", DateTime.Now);
-                await command.ExecuteNonQueryAsync();
+                    using var command = new SqlCommand("ActiveUser", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.Parameters.AddWithValue("@BatchId", batchId);
+                    command.Parameters.AddWithValue("@UpdatedBy", "admin");
+                    command.Parameters.AddWithValue("@UpdatedOn", DateTime.Now);
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception();
             }
         }
     }
+
 }

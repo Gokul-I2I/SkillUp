@@ -9,5 +9,7 @@ namespace SkillUpBackend.Repository
         Task<IEnumerable<User>> GetAllUsers();
         Task<User> GetUserByEmail(string email);
         Task<User> GetUserById(int id);
+        Task<User> GetUserByIdToActive(int id);
+
     }
 }

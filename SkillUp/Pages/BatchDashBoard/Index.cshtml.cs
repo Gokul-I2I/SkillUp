@@ -8,15 +8,13 @@ namespace SkillUp.Pages.BatchDashBoard
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiBaseUrl;
-
-        public IEnumerable<Batch> Batch { get; set; }
+        public IEnumerable<Batch> Batches { get; set; }
         public IndexModel(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClient = httpClientFactory.CreateClient("MyHttpClient");
             _apiBaseUrl = configuration["ApiBaseUrl"];
-
         }
-        public async void OnGet()
+        public async Task OnGet()
         {
             try
             {
@@ -24,8 +22,8 @@ namespace SkillUp.Pages.BatchDashBoard
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse<List<Batch>>>(content);
-                    Batch = apiResponse?.Result;
+                    Batches = JsonConvert.DeserializeObject<List<Batch>>(content);
+                    
                 }
             }
             catch (Exception ex)

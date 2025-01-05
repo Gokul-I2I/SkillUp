@@ -47,7 +47,7 @@ namespace SkillUpBackend.Service
             return await _batchRepository.GetBatchByIdWithUsers(id);
         }
 
-        public async Task<IEnumerable<Batch>> GetBatches()
+        public async Task<List<Batch>> GetBatches()
         {
             return await _batchRepository.GetBatches();
         }
@@ -59,30 +59,37 @@ namespace SkillUpBackend.Service
 
         public async Task AddUserToBatch(BatchCreateOrEdit batchCreateOrEdit, int id)
         {
+            await _batchRepository.GetBatchById(id);
             var batchUsers = await _batchRepository.GetBatchByIdWithUsers(id);
             batchCreateOrEdit.Id = id;
             batchCreateOrEdit.InsertedBy = "admin";
+            batchCreateOrEdit.InsertedOn = DateTime.Now;
+            batchCreateOrEdit.JoinDate = DateTime.Now;
+            batchCreateOrEdit.IsActive = true;
             foreach(var userId in batchCreateOrEdit.UserId)
             {
                 _userService.GetUserById(userId);
             }
-            batchCreateOrEdit.UserId = await CheckUserDeactive(batchCreateOrEdit.UserId, batchUsers.UserCreateOrEdits, id);
+            batchCreateOrEdit.UserId = await CheckUserDeactivate(batchCreateOrEdit.UserId, batchUsers.UserCreateOrEdits, id);
             
             await _batchRepository.AddUserToBatch(batchCreateOrEdit);
         }
 
         public async Task RemoveUserFromBatch(BatchCreateOrEdit batchCreateOrEdit, int id)
         {
+            await _batchRepository.GetBatchById(id);
             var batchUsers = _batchRepository.GetBatchByIdWithUsers(id);
             batchCreateOrEdit.Id = id;
             batchCreateOrEdit.UpdatedBy = "admin";
+            batchCreateOrEdit.UpdatedOn = DateTime.Now;
+            batchCreateOrEdit.IsActive = false;
             foreach (var userId in batchCreateOrEdit.UserId)
             {
                 _userService.GetUserById(userId);
             }
             await _batchRepository.RemoveUserFromBatch(batchCreateOrEdit);
         }
-        private async Task<ICollection<int>> CheckUserDeactive(ICollection<int> userId, ICollection<UserCreateOrEdit> userCreateOrEdits, int batchId)
+        private async Task<ICollection<int>> CheckUserDeactivate(ICollection<int> userId, ICollection<UserCreateOrEdit> userCreateOrEdits, int batchId)
         {
             var excitingUser = new Collection<int>();
             foreach(var user in userCreateOrEdits)
@@ -98,6 +105,13 @@ namespace SkillUpBackend.Service
                 await _batchRepository.ActiveUser(excitingUser, batchId);
             }
             return userId;
+        }
+
+        public async Task ActiveBatch(int id)
+        {
+            var batch = await _batchRepository.GetBatchById(id);
+            batch.IsActive = true;
+            await _batchRepository.UpdateBatch(batch);
         }
     }
 }

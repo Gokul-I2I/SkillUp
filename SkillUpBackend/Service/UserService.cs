@@ -81,7 +81,7 @@ namespace SkillUpBackend.Service
 
         public async Task ActiveUser(int id)
         {
-            var user = await _userRepository.GetUserById(id);
+            var user = await _userRepository.GetUserByIdToActive(id);
             user.IsActive = true;
             await _userRepository.UpdateUser(user);
         }

@@ -1,8 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using SkillUp.Pages.Login;
 using SkillUp.Services;
-using SkillUpBackend.Service;
-using SkillUpBackend;
 
 namespace SkillUp
 {
@@ -21,7 +18,7 @@ namespace SkillUp
             builder.Services.AddControllers();
             builder.Services.AddHttpClient<ApiService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7202/"); 
+                client.BaseAddress = new Uri("https://localhost:7202/");
             });
 
             builder.Services.AddHttpClient<LoginModel>();
@@ -35,7 +32,7 @@ namespace SkillUp
             });
             builder.Services.AddHttpClient("MyHttpClient", client =>
             {
-                client.Timeout = TimeSpan.FromSeconds(30);  
+                client.Timeout = TimeSpan.FromSeconds(30);
             });
             var app = builder.Build();
 

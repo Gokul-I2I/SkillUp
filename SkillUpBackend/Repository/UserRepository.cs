@@ -38,6 +38,15 @@ namespace SkillUpBackend.Repository
             }
             return user;
         }
+        public async Task<User> GetUserByIdToActive(int id)
+        {
+            var user = await _context.Users.Include(u => u.Role).FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+            {
+                throw new UserNotFoundException();
+            }
+            return user;
+        }
         public async Task<IEnumerable<User>> GetAllUsers()
         {
             return _context.Users.OrderDescending().Include(u => u.Role).ToList();

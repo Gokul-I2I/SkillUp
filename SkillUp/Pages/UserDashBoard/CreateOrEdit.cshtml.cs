@@ -70,7 +70,7 @@ namespace SkillUp.Pages.UserDashBoard
             var jsonContent = new StringContent(JsonConvert.SerializeObject(UserCreateOrEdit), Encoding.UTF8, "application/json");
             if (id.HasValue) // Update existing user
             {
-                var response = await _httpClient.PutAsync($"https://localhost:7202/api/user/{id}", jsonContent);
+                var response = await _httpClient.PutAsync($"{_apiBaseUrl}/user/{id}", jsonContent);
                 if (!response.IsSuccessStatusCode)
                 {
                     await LoadRoles();

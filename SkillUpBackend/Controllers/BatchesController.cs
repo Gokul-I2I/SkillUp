@@ -17,7 +17,7 @@ namespace SkillUpBackend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Batch>>> GetBatches()
+        public async Task<ActionResult<List<Batch>>> GetBatches()
         {
             try
             {
@@ -41,6 +41,23 @@ namespace SkillUpBackend.Controllers
             {
                 var batchViewModel = await _batchService.GetBatchByIdWithUsers(id);
                 return Ok(batchViewModel);
+            }
+            catch (BatchNotFoundException)
+            {
+                return NotFound(id);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Batch>> GetBatchById(int id)
+        {
+            try
+            {
+                var batch = await _batchService.GetBatchById(id);
+                return Ok(batch);
             }
             catch (BatchNotFoundException)
             {
@@ -134,6 +151,19 @@ namespace SkillUpBackend.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+        [HttpPatch("{id}/ActiveUser")]
+        public async Task<IActionResult> ActiveBatch(int id)
+        {
+            try
+            {
+                await _batchService.ActiveBatch(id);
+                return Ok();
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
             }
         }
     }

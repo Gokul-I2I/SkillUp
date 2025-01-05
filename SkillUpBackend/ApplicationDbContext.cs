@@ -15,9 +15,8 @@ namespace SkillUpBackend
         public DbSet<Topic> Topics { get; set; }
         public DbSet<Subtopic> Subtopics { get; set; }
         public DbSet<UserSubtopic> UserSubtopics { get; set; }
-
-        public DbSet<Batch> Batches { get; set; }
         public DbSet<StreamModel> Streams { get; set; }
+        public DbSet<Batch> Batches { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -43,10 +42,6 @@ namespace SkillUpBackend
                 .Property(us => us.State)
                 .HasConversion<string>();
 
-            //modelBuilder.Entity<User>()
-            //    .HasOne(u => u.Role) 
-            //    .WithMany(r => r.Users) 
-            //    .HasForeignKey(u => u.RoleId);
             modelBuilder.Entity<Batch>()
                 .Property(b => b.Id)
                 .ValueGeneratedOnAdd();
@@ -54,33 +49,23 @@ namespace SkillUpBackend
             modelBuilder.Entity<StreamModel>()
                 .Property(s => s.Id)
                 .ValueGeneratedOnAdd();
-            // User-Batch mapping
+
+            // Batch-user 
             modelBuilder.Entity<BatchUser>()
-                .HasKey(ub => new { ub.UserId, ub.BatchId });
+           .HasKey(bu => new { bu.UserId, bu.BatchId });
 
             modelBuilder.Entity<BatchUser>()
-                .HasOne(ub => ub.User)
-                .WithMany(u => u.BatchUsers)
-                .HasForeignKey(ub => ub.UserId);
-
-            modelBuilder.Entity<BatchUser>()
-                .HasOne(ub => ub.Batch)
+                .HasOne(bs => bs.Batch)
                 .WithMany(b => b.BatchUsers)
-                .HasForeignKey(ub => ub.BatchId);
-
+                .HasForeignKey(bs => bs.BatchId);
             // Batch-StreamModel mapping
             modelBuilder.Entity<BatchStream>()
-                .HasKey(bs => new { bs.BatchId, bs.StreamId }); // Composite Key
+                .HasKey(bs => new { bs.BatchId, bs.StreamId }); 
 
             modelBuilder.Entity<BatchStream>()
                 .HasOne(bs => bs.Batch)
                 .WithMany(b => b.BatchStreams)
-                .HasForeignKey(bs => bs.BatchId);
-
-            modelBuilder.Entity<BatchStream>()
-                .HasOne(bs => bs.Stream)
-                .WithMany(s => s.BatchStreams)
-                .HasForeignKey(bs => bs.StreamId);
+                .HasForeignKey(bs => bs.BatchId); 
         }
     }
 }
