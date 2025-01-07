@@ -1,5 +1,9 @@
 using SkillUp.Pages.Login;
 using SkillUp.Services;
+using SkillUpBackend.Service;
+using SkillUpBackend;
+using ITraineeService = SkillUp.Services.ITraineeService;
+using TraineeService = SkillUp.Services.TraineeService;
 
 namespace SkillUp
 {
@@ -16,6 +20,8 @@ namespace SkillUp
     });
             builder.Services.AddHttpClient();
             builder.Services.AddControllers();
+            builder.Services.AddScoped<ITraineeService, TraineeService>();
+
             builder.Services.AddHttpClient<ApiService>(client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7202/");

@@ -1,0 +1,666 @@
+﻿@page
+@model SkillUp.Pages.TraineeDashBoard.IndexModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-top: 70px; /* Adjust based on header height */
+            margin-bottom: 50px; /* Adjust based on footer height */
+            padding: 20px;
+            overflow: hidden;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .scrollable-table-container {
+            height: 300px; /* Set table container height */
+            overflow-y: auto;
+            border: 1px solid lightgray;
+            border-radius: 5px;
+            padding: 10px;
+            position: relative;
+            margin-top: 0;
+        }
+        
+        .table-header {
+            margin-bottom: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        th, td {
+            border: 1px solid lightblue;
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle; /* Ensure text is vertically aligned */
+        }
+
+        th {
+            background-color: slategrey;
+            position: sticky; /* Keep table headers visible during scroll */
+            color: white;
+            top: 0;
+            z-index: 2;
+        }
+
+        tbody tr {
+            display: table-row;
+            transition: background-color 0.3s ease;
+        }
+
+            tbody tr:hover {
+                background-color: #eef6ff;
+            }
+
+        .styled-dropdown {
+            border-radius: 0.5rem; /* Curved corners */
+            padding: 0.3rem;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+            .styled-dropdown option {
+                padding: 0.5rem;
+            }
+
+            /* Styling for the select dropdown itself */
+            .styled-dropdown:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+            }
+
+        /* Ensure modal is on top */
+        .subtask-form-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1100; /* Ensure it's above the blurred section */
+            display: none; /* Initially hidden */
+            width: 400px;
+        }
+
+            /* Adjust the vertical spacing between textboxes */
+            .subtask-form-container form label {
+                display: inline-block;
+                width: 150px; /* Ensure labels are aligned */
+                margin-bottom: 10px; /* Space below each label */
+                text-align: right; /* Align label text to the right */
+            }
+
+            .subtask-form-container form input {
+                width: calc(100% - 180px); /* Adjust width for label space */
+                margin-bottom: 20px; /* Add vertical spacing between input fields */
+                padding: 5px; /* Add padding for better usability */
+                border: 1px solid lightgray;
+                border-radius: 5px;
+                margin-left: 10px; /* Horizontal space between label and input */
+            }
+
+        /* Adjust the spacing for error messages */
+        .error-message {
+            margin-left: 110px; /* Align error messages with the textboxes */
+            margin-top: -15px; /* Move closer to the input box */
+            display: block;
+        }
+
+
+        .modal-active {
+            display: block; /* Ensure modal displays properly */
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000; /* Ensure it's below the modal */
+            display: none; /* Initially hidden */
+        }
+
+        .modal-overlay-active {
+            display: block;
+        }
+
+        .blurred {
+            filter: blur(5px);
+            pointer-events: none; /* Prevent clicks while blurred */
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 2px solid;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-navigate {
+            border-color: deepskyblue;
+            color: deepskyblue;
+            border-radius: 5px;
+        }
+
+            .btn-navigate:hover {
+                background-color: deepskyblue;
+                color: white;
+            }
+
+        .btn-create {
+            border-color: lightseagreen;
+            color: lightseagreen;
+            border-radius: 5px;
+        }
+
+            .btn-create:hover {
+                background-color: lightseagreen;
+                color: white;
+            }
+
+        .btn-edit {
+            border-color: limegreen;
+            color: limegreen;
+            border-radius: 5px;
+        }
+
+            .btn-edit:hover {
+                background-color: limegreen;
+                color: white;
+            }
+
+        .btn-delete {
+            border-color: orangered;
+            color: orangered;
+            border-radius: 5px;
+        }
+
+            .btn-delete:hover {
+                background-color: orangered;
+                color: white;
+            }
+
+        .btn-cancel {
+            border-color: red;
+            color: red;
+            border-radius: 5px;
+        }
+
+            .btn-cancel:hover {
+                background-color: red;
+                color: white;
+            }
+
+        .btn-clear {
+            border-color: midnightblue;
+            color: midnightblue;
+            border-radius: 5px;
+        }
+
+            .btn-clear:hover {
+                background-color: midnightblue;
+                color: white;
+            }
+
+        .hidden {
+            display: none;
+        }
+
+        .scrollable {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Success/Error Message -->
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success" id="success-message">
+                @TempData["Message"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" id="error-message">
+                @TempData["Error"]
+            </div>
+        }
+        <!-- Topics Section -->
+        <div id="topics-section">
+            <h2 class="center">Topics</h2>
+                <table class="table-header">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th class="center">Actions</th>
+                        </tr>
+                    </thead>
+                    </table>
+            <div class="scrollable-table-container">
+                    <table>
+                    <tbody>
+                        @if (Model.Topics.Any())
+                        {
+                            @foreach (var topic in Model.Topics)
+                            {
+                                <tr>
+                                    <td>@topic.TopicName</td>
+                                    <td class="center">
+                                        <button class="btn-navigate" onclick="fetchSubtopics(@topic.Id)">Go to Subtopics</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="2" class="center">No topics available.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Subtopics Section -->
+        <div id="subtopics-section" class="hidden">
+            <button class="btn-navigate" onclick="showTopics()">Go to Topics</button>
+            <h2 class="center">Subtopics</h2>
+            <table class="table-header">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th class="center">Description</th>
+                        <th class="center">Actions</th>
+                        <th class="center">Assigned On</th>
+                        <th class="center">Due Date</th>
+                        <th class="center">Time Taken</th>
+                        <th class="center">Status</th>
+                    </tr>
+                </thead>
+            </table>
+            <div class="scrollable-table-container">
+            <table>               
+                <tbody id="subtopics-container" class="scrollable">
+                    <!-- Subtopics will be dynamically inserted here -->
+                </tbody>
+            </table>
+           </div>
+        </div>
+
+        <!-- Add the overlay -->
+        <div id="modal-overlay" class="modal-overlay"></div>
+
+        <!-- Subtasks Section -->
+        <div id="subtasks-section" class="hidden">
+            <div class="action-buttons">
+                <button class="btn-navigate" onclick="showSubtopics()">Go to Subtopics</button>
+                <button class="btn-create" onclick="showSubtaskForm()">+ Create Subtask</button>
+            </div>
+            <h2 class="center">Subtasks</h2>
+            <table class="table-header">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th class="center">Time Required</th>
+                        <th class="center">Actions</th>
+                    </tr>
+                </thead>
+            </table>
+            <div class="scrollable-table-container">
+            <table>                
+                <tbody id="subtasks-container" class="scrollable">
+                    <!-- Subtasks will be dynamically inserted here -->
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+         <!-- Subtask Form -->
+        <div id="subtask-form-container" class="subtask-form-container hidden">
+            <form method="post" asp-page-handler="CreateNewSubTask" id="subtask-form">
+                <input type="hidden" asp-for="SubTask.Id" id="hidden-subtask-id" />
+                <input type="hidden" asp-for="SubTask.SubTopicId" id="hidden-subtopic-id" />
+
+                <div>
+                    <label for="subtask-title">Title:</label>
+                    <input type="text" asp-for="SubTask.Title" id="subtask-title" placeholder="Enter title..." /><br />
+                    <span id="title-error" class="error-message" style="color: red; display: none;">Title is required</span>
+                </div>
+
+                <div>
+                    <label for="subtask-hours">Hours:</label>
+                    <input type="number" asp-for="SubTask.Hours" id="subtask-hours" name="Hours" min="0" max="23"
+                           placeholder="Enter hours..." required /><br />
+                    <span id="hours-error" class="error-message" style="color: red; display: none;">Hours are required</span>
+                </div>
+
+                <div>
+                    <label for="subtask-minutes">Minutes:</label>
+                    <input type="number" asp-for="SubTask.Minutes" id="subtask-minutes" name="Minutes" min="0" max="59"
+                           placeholder="Enter minutes..." required /><br />
+                    <span id="minutes-error" class="error-message" style="color: red; display: none;">Minutes are required</span>
+                </div>
+
+                <div class="center">
+                    <button type="submit" class="btn-create" id="create-btn" onclick="return validateForm()">Create</button>
+                    <button type="submit" class="btn-edit hidden" id="save-btn" onclick="return validateForm()">Save</button>
+                    <button type="button" class="btn-cancel" id="cancel-btn" onclick="cancelSubTaskForm()">Cancel</button>
+                    <button type="button" class="btn-clear" id="clear-btn" onclick="clearTextBoxes()">Clear</button>
+                </div>
+            </form>
+
+            <form id="changeTaskStateForm" method="post" asp-page-handler="ChangeTaskState">
+                <input type="hidden" id="subtopicId" name="subtopicId" />
+                <input type="hidden" id="taskState" name="state" />
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+
+        function setFormActionToEdit() {
+            const form = document.getElementById("subtask-form");
+            const editHandlerUrl = form.action.replace("CreateNewSubTask", "EditSubTask");
+            form.action = editHandlerUrl;
+        }
+
+        function setFormActionToCreate() {
+            const form = document.getElementById("subtask-form");
+            const createHandlerUrl = form.action.replace("EditSubTask", "CreateNewSubTask");
+            form.action = createHandlerUrl;
+        }
+
+        function clearTextBoxes() { 
+            document.getElementById("subtask-title").value = "";
+            document.getElementById("subtask-time").value = "";
+        }
+
+        function showSubtaskForm() {
+            const formContainer = document.getElementById("subtask-form-container");
+            const overlay = document.getElementById("modal-overlay");
+            const subtasksSection = document.getElementById("subtasks-section");
+
+            // Make the form visible
+            formContainer.classList.remove("hidden");
+            formContainer.classList.add("modal-active");
+
+            // Show the overlay
+            overlay.classList.add("modal-overlay-active");
+
+            // Blur the background section
+            subtasksSection.classList.add("blurred");
+        }
+
+        setTimeout(() => {
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            if (successMessage) successMessage.style.display = 'none';
+            if (errorMessage) errorMessage.style.display = 'none';
+        }, 2000);
+
+        function validateForm() {
+            let isValid = true;
+
+            const titleField = document.getElementById('subtask-title');
+            const titleError = document.getElementById('title-error');
+            const hours = document.getElementById("subtask-hours").value;
+            const minutes = document.getElementById("subtask-minutes").value;
+
+            if (!titleField.value.trim()) {
+                titleField.classList.add('error');
+                titleError.style.display = 'block';
+                isValid = false;
+            } else {
+                titleField.classList.remove('error');
+                titleError.style.display = 'none';
+            }
+
+            if (!hours || hours < 0 || hours > 23) {
+                document.getElementById("hours-error").style.display = "block";
+                valid = false;
+            } else {
+                document.getElementById("hours-error").style.display = "none";
+            }
+
+            if (!minutes || minutes < 0 || minutes > 59) {
+                document.getElementById("minutes-error").style.display = "block";
+                valid = false;
+            } else {
+                document.getElementById("minutes-error").style.display = "none";
+            }
+
+            return isValid;
+        }
+
+        function showTopics() {
+            document.getElementById("topics-section").classList.remove("hidden");
+            document.getElementById("subtopics-section").classList.add("hidden");
+            document.getElementById("subtasks-section").classList.add("hidden");
+        }
+
+        function showSubtopics() {
+            document.getElementById("topics-section").classList.add("hidden");
+            document.getElementById("subtopics-section").classList.remove("hidden");
+            document.getElementById("subtasks-section").classList.add("hidden");
+        }
+
+        function showSubtasks() {
+            document.getElementById("topics-section").classList.add("hidden");
+            document.getElementById("subtopics-section").classList.add("hidden");
+            document.getElementById("subtasks-section").classList.remove("hidden");
+        }
+
+        // Check for subTopicId in the query string and show the subtasks section.
+        const urlParams = new URLSearchParams(window.location.search);
+        const subTopicId = urlParams.get('subTopicId');
+        if (subTopicId) {
+            // Fetch subtasks for the given subTopicId and display the subtasks section.
+            fetchSubtasks(subTopicId);
+        }
+
+        function editSubtask(id, title, timeNeeded) {
+            showSubtaskForm();
+            document.getElementById("hidden-subtask-id").value = id;
+            document.getElementById("subtask-title").value = title;
+            document.getElementById("subtask-time").value = timeNeeded;
+
+            // Update form action and visibility
+            setFormActionToEdit();
+            document.getElementById("create-btn").style.display = "none";
+            document.getElementById("save-btn").style.display = "inline-block";
+        }
+
+        function cancelSubTaskForm() {
+            const formContainer = document.getElementById("subtask-form-container");
+            const overlay = document.getElementById("modal-overlay");
+            const subtasksSection = document.getElementById("subtasks-section");
+
+            // Hide the form and overlay
+            formContainer.classList.add("hidden");
+            formContainer.classList.remove("modal-active");
+            overlay.classList.remove("modal-overlay-active");
+
+            // Remove blur effect from background section
+            subtasksSection.classList.remove("blurred");
+
+            // Reset the form fields
+            document.getElementById("hidden-subtask-id").value = "";
+            document.getElementById("subtask-title").value = "";
+            document.getElementById("subtask-time").value = "";
+        }
+
+        function deleteSubtask(id) {
+            if (!confirm("Are you sure you want to delete this subtask?")) return;
+
+            fetch(`/TraineeDashBoard?handler=DeleteSubTask&id=${id}`, { method: 'GET' })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to delete subtask.');
+
+                    return response.json(); // Parse the JSON response from the server
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert('Subtask deleted successfully');
+                        fetchSubtasks(document.getElementById("hidden-subtopic-id").value); // Refresh subtasks dynamically
+                    } else {
+                        alert(data.message || 'Failed to delete subtask.');
+                    }
+                })
+                .catch(error => console.error('Error deleting subtask:', error));
+        }
+
+        function handleTaskStateChange(subtopicId, newState) {
+            // Populate form fields
+            document.getElementById("subtopicId").value = subtopicId;
+            document.getElementById("taskState").value = newState;
+            console.log(newState);
+
+            const form = document.getElementById("changeTaskStateForm");
+            form.submit();
+
+            // Reload subtopics after form submission to update the view
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                fetchSubtopics(document.getElementById("subtopicId").value);
+            });
+        }
+
+        function fetchSubtopics(topicId) {
+            fetch(`/TraineeDashBoard/?handler=GetSubtopics&topicId=${topicId}`)
+                .then(response => response.json())
+                .then(subtopics => {
+                    const subtopicsTableBody = document.getElementById("subtopics-container");
+                    subtopicsTableBody.innerHTML = ""; // Clear previous subtopics
+
+                    if (subtopics.length > 0) {
+                        subtopics.forEach(subtopic => {
+
+                            const startDate = new Date(subtopic.startDate).toLocaleDateString();
+                            const endDate = subtopic.endDate ? new Date(subtopic.endDate).toLocaleDateString() : "N/A";
+
+                            const subtopicRow = document.createElement("tr");
+                            subtopicRow.innerHTML = `
+                                <td>${subtopic.name}</td>
+                                <td>${subtopic.description}</td>
+                                <td>
+                                     <button class="btn-navigate" onclick="setSubTopicId(${subtopic.id}); fetchSubtasks(${subtopic.id})">Go to Subtasks</button>
+                                </td>
+                                <td>${startDate}</td>
+                                <td>${endDate}</td>
+                                <td>${subtopic.timeTaken}</td>
+                                <td> ${subtopic.taskState}
+                                    <select class="styled-dropdown" onchange="handleTaskStateChange(${subtopic.id}, this.value)">
+                                        <option value="Open" ${subtopic.taskState === 'Open' ? 'selected' : ''}>Open</option>
+                                        <option value="InProgress" ${subtopic.taskState === 'InProgress' ? 'selected' : ''}>In Progress</option>
+                                        <option value="Review" ${subtopic.taskState === 'Review' ? 'selected' : ''}>Review</option>
+                                        <option value="Completed" ${subtopic.taskState === 'Completed' ? 'selected' : ''}>Completed</option>
+                                    </select>
+                                </td>                            `;
+                            subtopicsTableBody.appendChild(subtopicRow);
+                        });
+                    } else {
+                        subtopicsTableBody.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="no-content-box">No subtopics available.</td>
+                            </tr>
+                        `;
+                    }
+                    showSubtopics();
+                })
+                .catch(error => console.error('Error fetching subtopics:', error));
+        }
+
+        // Set the hidden subtopic ID field
+        function setSubTopicId(subTopicId) {
+            document.getElementById("hidden-subtopic-id").value = subTopicId;
+            console.log("SetsubtopicId:", subTopicId);
+        }
+
+        function fetchSubtasks(subTopicId) {
+            fetch(`/TraineeDashBoard?handler=GetSubtasks&subTopicId=${subTopicId}`)
+                .then(response => response.json())
+                .then(subtasks => {
+                    const subtasksTableBody = document.getElementById("subtasks-container");
+                    subtasksTableBody.innerHTML = ""; // Clear previous subtasks
+
+                    if (subtasks.length > 0) {
+                        subtasks.forEach(subtask => {
+                            const subtaskRow = document.createElement("tr");
+                            subtaskRow.innerHTML = `
+                                <td>${subtask.title}</td>
+                                <td class="center">${subtask.hours} hr ${subtask.minutes}</td>
+                                <td class="center">
+                                    <button class="btn-edit center" onclick="editSubtask(${subtask.id}, '${subtask.title}', '${subtask.timeNeeded}')">Edit</button>
+                                    <button class="btn-delete center" onclick="deleteSubtask(${subtask.id})">Delete</button>
+                                </td>
+                            `;
+                            subtasksTableBody.appendChild(subtaskRow);
+                        });
+                    } else {
+                        subtasksTableBody.innerHTML = `
+                            <tr>
+                                <td colspan="3" class="no-content-box">No subtasks available.</td>
+                            </tr>
+                        `;
+                    }
+                    showSubtasks();
+                })
+                .catch(error => console.error('Error fetching subtasks:', error));
+        }
+      
+    </script>
+</body>
+</html>

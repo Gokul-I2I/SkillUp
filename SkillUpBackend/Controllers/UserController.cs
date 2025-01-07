@@ -86,6 +86,24 @@ namespace SkillUpBackend.Controllers
             }
         }
 
+        [HttpGet("{email}")]
+        public async Task<IActionResult> GetUserByEmail(string email)
+        {
+            try
+            {
+                var user = await _userService.GetUserByEmail(email);
+                return Ok(user);
+            }
+            catch (UserNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPatch("{id}")]
         public async Task<IActionResult> ActiveUser(int id)
         {

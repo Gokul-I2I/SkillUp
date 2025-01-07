@@ -14,10 +14,11 @@ namespace SkillUpBackend
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllers();
-            builder.Services.AddRazorPages();
-            builder.Services.AddHttpClient();
+            builder.Services.AddControllers().AddNewtonsoftJson();
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddRazorPages();
 
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IRoleService, RoleService>();
@@ -33,6 +34,9 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
             builder.Services.AddScoped<IStreamService, StreamService>();
             builder.Services.AddScoped<BatchMapper>();
             builder.Services.AddScoped<UserMapper>();
+            builder.Services.AddScoped<ITraineeService, TraineeService>();
+            builder.Services.AddScoped<ITraineeRepository, TraineeRepository>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddCors(options =>
@@ -53,6 +57,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
                 app.UseSwaggerUI();
             }
             app.UseCors("AllowAll");
+
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.MapControllers();

@@ -6,14 +6,14 @@ namespace SkillUpBackend
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-          : base(options)
-        {
-        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Topic> Topics { get; set; }
         public DbSet<Subtopic> Subtopics { get; set; }
+        public DbSet<SubTask> SubTasks { get; set; }
+
         public DbSet<UserSubtopic> UserSubtopics { get; set; }
         public DbSet<StreamModel> Streams { get; set; }
         public DbSet<Batch> Batches { get; set; }
@@ -42,6 +42,17 @@ namespace SkillUpBackend
                 .Property(us => us.State)
                 .HasConversion<string>();
 
+            // Parent-Child: SubTopic -> SubTask
+            modelBuilder.Entity<Subtopic>()
+                .HasMany(st => st.SubTasks)
+                .WithOne(sts => sts.SubTopic)
+                .HasForeignKey(sts => sts.SubTopicId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //modelBuilder.Entity<User>()
+            //    .HasOne(u => u.Role) 
+            //    .WithMany(r => r.Users) 
+            //    .HasForeignKey(u => u.RoleId);
             modelBuilder.Entity<Batch>()
                 .Property(b => b.Id)
                 .ValueGeneratedOnAdd();

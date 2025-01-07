@@ -18,6 +18,7 @@ namespace SkillUpBackend.Model
         public DateTime? UpdatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public ICollection<UserSubtopic> UserSubtopics { get; set; } = new List<UserSubtopic>();
+        public ICollection<SubTask>? SubTasks { get; set; }
 
     }
 }

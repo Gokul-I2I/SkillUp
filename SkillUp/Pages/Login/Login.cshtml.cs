@@ -28,6 +28,19 @@ namespace SkillUp.Pages.Login
 
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<User>(responseContent);
+                Response.Cookies.Append("UserEmail", result.Email, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Strict
+                });
+                Response.Cookies.Append("UserId", result.Id.ToString(), new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Strict
+                });
+
                 if (result != null && result.Role != null)
                 {
                     switch (result.Role.Name)
@@ -37,7 +50,7 @@ namespace SkillUp.Pages.Login
                         case "mentor":
                             return RedirectToPage("/Mentor/Index");
                         case "trainee":
-                            return RedirectToPage("/TraineeDashBoard/Trainee");
+                            return RedirectToPage("/TraineeDashBoard/Index");
                         default:
                             break;
                     }

@@ -1,4 +1,5 @@
-﻿using SkillUpBackend.CustomException;
+﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using SkillUpBackend.CustomException;
 using SkillUpBackend.Mapper;
 using SkillUpBackend.Model;
 using SkillUpBackend.Repository;
@@ -47,6 +48,15 @@ namespace SkillUpBackend.Service
             return user;
         }
 
+        public async Task<User?> GetUserByEmail(string email)
+        {
+            var user = await _userRepository.GetUserByEmail(email.ToLower());
+            if (user == null)
+            {
+                throw new UserNotFoundException();
+            }
+            return user;
+        }
 
         public async Task DeleteUser(int id)
         {
